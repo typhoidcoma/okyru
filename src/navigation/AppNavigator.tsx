@@ -4,6 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from '../screens/SplashScreen';
 
 // Create a Stack Navigator
+import React from 'react';
+
 const Stack = createNativeStackNavigator();
 
 // Define your navigation structure
