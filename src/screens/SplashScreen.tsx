@@ -19,9 +19,10 @@ const SplashScreen = ({ navigation }: { navigation: any }) => {
   }, [navigation, fadeAnim]);
 
   return (
-    <LinearGradient colors={['#4c669f', '#3b5998', '#192f6a']} style={styles.container}>
+    <LinearGradient colors={['#EBF3FA', '#DDE7F3', '#E5F0F9']} style={styles.container}>
       <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
-        <OkyruLogo width={100} height={100} />
+        <OkyruLogo />
+        {/* <Image source={require('../assets/logos/logo.png')} style={styles.image} /> */}
         <Text style={styles.text}>Splash Screen</Text>
       </Animated.View>
     </LinearGradient>
@@ -35,8 +36,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 100, // Or the size you want
-    height: 100, // Or the size you want
+    width: 250, // Or the size you want
+    height: 250, // Or the size you want
     marginBottom: 20,
   },
   text: {

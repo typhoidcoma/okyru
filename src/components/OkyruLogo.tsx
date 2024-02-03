@@ -1,13 +1,21 @@
 import React from 'react';
-import { View } from 'react-native';
-import SvgUri from 'react-native-svg-uri';
+import { View, StyleSheet } from 'react-native';
+import Rive from 'rive-react-native';
 
-const OkyruLogo = ({ width, height }: { width: number; height: number }) => {
+const OkyruLogo = () => {
   return (
-    <View>
-      <SvgUri width={width} height={height} source={require('../assets/logos/logo.svg')} />
+    <View style={styles.container}>
+      <Rive resourceName="okyru_logo_anim" />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+});
 
 export default OkyruLogo;
