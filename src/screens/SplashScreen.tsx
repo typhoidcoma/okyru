@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, Animated } from 'react-native';
+import { Text, StyleSheet, Animated, Image } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import OkyruLogo from '../components/OkyruLogo'; // Import the okyruLogo component
 const SplashScreen = ({ navigation }: { navigation: any }) => {
@@ -21,6 +21,7 @@ const SplashScreen = ({ navigation }: { navigation: any }) => {
   return (
     <LinearGradient colors={['#EBF3FA', '#DDE7F3', '#E5F0F9']} style={styles.container}>
       <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
+        <Text style={styles.text}>Splash Screen</Text>
         <OkyruLogo />
         {/* <Image source={require('../assets/logos/logo.png')} style={styles.image} /> */}
         <Text style={styles.text}>Splash Screen</Text>
