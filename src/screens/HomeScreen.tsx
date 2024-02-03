@@ -1,11 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-
+import { Text, StyleSheet } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 const HomeScreen = () => {
   return (
-    <View style={styles.container}>
+    <LinearGradient colors={['#EBF3FA', '#DDE7F3', '#E5F0F9']} style={styles.container}>
       <Text style={styles.text}>Home Screen</Text>
-    </View>
+    </LinearGradient>
   );
 };
 

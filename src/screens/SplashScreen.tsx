@@ -21,7 +21,7 @@ const SplashScreen = ({ navigation }: { navigation: any }) => {
   return (
     <LinearGradient colors={['#EBF3FA', '#DDE7F3', '#E5F0F9']} style={styles.container}>
       <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
-        <OkyruLogo width={320} height={320} />
+        <OkyruLogo />
         {/* <Image source={require('../assets/logos/logo.png')} style={styles.image} /> */}
         <Text style={styles.text}>Splash Screen</Text>
       </Animated.View>
