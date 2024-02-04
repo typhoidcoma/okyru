@@ -45,7 +45,7 @@ const IconButton: React.FC<IconButtonProps> = ({ onPress, width, height, svgIcon
       case 'hover':
         return require('../assets/images/buttons/icon_button_hover.png');
       case 'press':
-        iconColor = 'blue';
+        iconColor = '#88A5BF45';
         return require('../assets/images/buttons/icon_button_pressed.png');
       default:
         return require('../assets/images/buttons/icon_button_active.png');
@@ -77,10 +77,8 @@ const IconButton: React.FC<IconButtonProps> = ({ onPress, width, height, svgIcon
 const styles = StyleSheet.create({
   iconContainer: {
     position: 'absolute',
-    zIndex: 5,
     justifyContent: 'center',
     alignItems: 'center',
-    // Removed top, left, right, bottom to allow dynamic sizing
   },
 
   buttonContainer: {

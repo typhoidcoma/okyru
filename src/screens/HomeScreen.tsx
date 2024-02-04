@@ -8,14 +8,14 @@ const HomeScreen = () => {
   return (
     <LinearGradient colors={['#EBF3FA', '#DDE7F3', '#E5F0F9']} style={styles.container}>
       <IconButton
-        svgIconName='26_Menu'
+        svgIconName="26_Menu"
         width={64}
         height={64}
         onPress={() => console.log('Button pressed')}
       />
       <StartButton onPress={() => console.log('Start button pressed')} />
-      <Icon iconName="26_Menu" size={48} color="#EA0008" />
-      <Text style={styles.text}>Home Screen</Text>
+      <Text style={styles.text}>okyru</Text>
+      <Icon iconName="26_Menu" size={64} color="red" />
     </LinearGradient>
   );
 };
@@ -27,7 +27,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
+    fontFamily: 'Nirmala', // <- Use the exact name from the font file
     fontSize: 24,
+    color: '#EA0008',
+  },
+  customFont: {
+    fontFamily: 'roboto', // <- Use the exact name from the font file
+    fontSize: 24,
+    color: '#EA0008',
   },
 });
 
