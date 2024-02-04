@@ -12,7 +12,7 @@ const SplashScreen = ({ navigation }: { navigation: any }) => {
         duration: 2000,
         useNativeDriver: true,
       }).start(() => navigation.replace('Home')); // Start the animation
-    }, 20000); // Wait for 3000 milliseconds = 3 seconds
+    }, 2000); // Wait for 3000 milliseconds = 3 seconds
 
     // Clear timeout if the component is unmounted
     return () => clearTimeout(timer);
