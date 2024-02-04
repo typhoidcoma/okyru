@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity, StyleSheet, Image } from 'react-native';
+import { View, TouchableOpacity, StyleSheet, Image, ImageSourcePropType } from 'react-native';
 
 interface IconButtonProps {
   onPress: () => void;
@@ -13,26 +13,25 @@ const IconButton: React.FC<IconButtonProps> = ({ onPress }) => {
   };
 
   const handlePressOut = () => {
-    setButtonState('hover');
+    setButtonState('inactive'); // Set the button state to 'inactive' on press out
   };
 
   const handlePress = () => {
     setButtonState('press');
     onPress();
+    setTimeout(() => {
+      setButtonState('inactive'); // Set the button state to 'inactive' after a short delay
+    }, 100); // Adjust the delay time as needed
   };
 
-  const handleBlur = () => {
-    setButtonState('inactive');
-  };
-
-  const getButtonImage = () => {
+  const getButtonImage = (): ImageSourcePropType => {
     switch (buttonState) {
       case 'hover':
-        return require('../assets/images/buttons/icon_button_pressed.png'); // Replace with your image path
+        return require('../assets/images/buttons/icon_button_pressed.png');
       case 'press':
-        return require('../assets/images/buttons/icon_button_pressed.png'); // Replace with your image path
+        return require('../assets/images/buttons/icon_button_pressed.png');
       default:
-        return require('../assets/images/buttons/icon_button.png'); // Replace with your image path
+        return require('../assets/images/buttons/icon_button.png');
     }
   };
 
@@ -41,11 +40,10 @@ const IconButton: React.FC<IconButtonProps> = ({ onPress }) => {
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       onPress={handlePress}
-      onBlur={handleBlur}
-      activeOpacity={1} // To disable default opacity change on press
+      activeOpacity={1}
     >
       <View style={styles.buttonContainer}>
-        <Image source={getButtonImage()} style={styles.buttonImage} /> {/* Button image */}
+        <Image source={getButtonImage()} style={styles.buttonImage} />
       </View>
     </TouchableOpacity>
   );
@@ -58,8 +56,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonImage: {
-    width: 32,
-    height: 32,
+    width: 64,
+    height: 64,
   },
 });
 
