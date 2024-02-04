@@ -52,10 +52,9 @@ export const GlobalStyles = StyleSheet.create({
     fontSize: FontSizes.medium,
   },
   imageLogo: {
-    fontFamily: 'center',
-    color: 'center',
     width: 250,
     height: 250,
+    position: 'absolute',
   },
   // ... add more global styles as needed
 });
