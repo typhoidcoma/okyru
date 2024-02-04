@@ -76,8 +76,8 @@ const IconTestScreen: React.FC = () => {
                 keyExtractor={(item) => item}
                 renderItem={({ item: iconName }) => (
                     <View style={styles.iconContainer}>
-                        <Icon iconName={iconName} size={64} color="green" />
-                        <Text style={GlobalStyles.text}>{iconName}</Text>
+                        <Icon iconName={iconName} size={40} color="blue" />
+                        <Text style={GlobalStyles.tinyText}>{iconName}</Text>
                     </View>
                 )}
             />
@@ -96,8 +96,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         padding: 0,
-        borderWidth: 5, // Optional, just for visual separation
-        borderColor: '#eee', // Optional, color for visual separation
+        borderWidth: 1, // Optional, just for visual separation
+        borderColor: '#88A5BF', // Optional, color for visual separation
     },
     iconText: {
         marginTop: 5, // Space between icon and text

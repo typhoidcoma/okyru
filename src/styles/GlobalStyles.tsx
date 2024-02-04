@@ -4,13 +4,13 @@ import { StyleSheet } from 'react-native';
 export const Colors = {
     primary: '#EA0008',
     secondary: '#88A5BF45',
-    background: 'transparent',
+    background: '#E3EDF7',
     text: '#EA0008',
     // ... add more colors as needed
 };
 
 export const FontSizes = {
-    tiny: 8,
+    tiny: 10,
     small: 12,
     medium: 16,
     large: 20,
