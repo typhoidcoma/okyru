@@ -14,7 +14,7 @@ const Icon: FunctionComponent<IconProps> = ({ iconName, size = 24, color = 'blac
   const IconComponent = getIconComponent(iconName);
 
   if (!IconComponent) {
-    return <ActivityIndicator size="small" color="#0000ff" />;
+    return <ActivityIndicator size="small" color="#EA0008" />;
   }
 
   return (
@@ -28,6 +28,7 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
+    color: 'black',
   },
 });
 
