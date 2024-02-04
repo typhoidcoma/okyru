@@ -20,29 +20,32 @@ import CustomLinearGradient from '../components/CustomLinearGradient';
 // }
 
 const SplashScreen: React.FC<any> = ({ navigation }) => {
-  const [fadeAnim] = useState(new Animated.Value(1)); // Initial value for opacity: 1
+    const [fadeAnim] = useState(new Animated.Value(1)); // Initial value for opacity: 1
 
-  useEffect(() => {
-    // Start the fade-out animation after a delay
-    const timer = setTimeout(() => {
-      Animated.timing(fadeAnim, {
-        toValue: 0,
-        duration: 1000,
-        useNativeDriver: true, // Add useNativeDriver for better performance
-      }).start(() => navigation.replace('Home')); // Navigate to 'Home' after animation ends
-    }, 3000); // Start the animation after 3 seconds
+    useEffect(() => {
+        // Start the fade-out animation after a delay
+        const timer = setTimeout(() => {
+            Animated.timing(fadeAnim, {
+                toValue: 0,
+                duration: 1000,
+                useNativeDriver: true, // Add useNativeDriver for better performance
+            }).start(() => navigation.replace('Home')); // Navigate to 'Home' after animation ends
+        }, 3000); // Start the animation after 3 seconds
 
-    // Clear timeout if the component is unmounted
-    return () => clearTimeout(timer);
-  }, [navigation, fadeAnim]); // Add fadeAnim to dependency array
+        // Clear timeout if the component is unmounted
+        return () => clearTimeout(timer);
+    }, [navigation, fadeAnim]); // Add fadeAnim to dependency array
 
-  return (
-    <CustomLinearGradient>
-      <Animated.View style={{ ...GlobalStyles.container, opacity: fadeAnim }}>
-        <Image source={require('../assets/logos/logo.png')} style={GlobalStyles.imageLogo} />
-      </Animated.View>
-    </CustomLinearGradient>
-  );
+    return (
+        <CustomLinearGradient>
+            <Animated.View style={{ ...GlobalStyles.container, opacity: fadeAnim }}>
+                <Image
+                    source={require('../assets/logos/logo.png')}
+                    style={GlobalStyles.imageLogo}
+                />
+            </Animated.View>
+        </CustomLinearGradient>
+    );
 };
 
 export default SplashScreen;
