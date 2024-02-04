@@ -5,12 +5,12 @@ import Rive, { Alignment, Fit } from 'rive-react-native';
 const OkyruLogo = () => {
   return (
     <Rive
-      resourceName={'okyru_logo_anim'}
+      resourceName={'truck_v7.riv'}
       fit={Fit.Fill}
       alignment={Alignment.Center}
       autoplay={true}
-      artboardName="Logo"
-      style={styles.logo}
+      // artboardName="Logo"
+      // style={styles.logo}
     />
   );
 };
