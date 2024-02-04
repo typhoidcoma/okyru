@@ -8,6 +8,7 @@ const OkyruLogo = () => {
       resourceName={'okyru_logo_anim'}
       fit={Fit.Fill}
       alignment={Alignment.Center}
+      autoplay={true}
       artboardName="Logo"
       style={styles.logo}
     />
@@ -16,8 +17,8 @@ const OkyruLogo = () => {
 
 const styles = StyleSheet.create({
   logo: {
-    width: 400,
-    height: 400,
+    width: 320,
+    height: 320,
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Text, StyleSheet, Animated, Image } from 'react-native';
+import { Text, StyleSheet, Animated } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import OkyruLogo from '../components/OkyruLogo'; // Import the okyruLogo component
 const SplashScreen = ({ navigation }: { navigation: any }) => {
@@ -12,7 +12,7 @@ const SplashScreen = ({ navigation }: { navigation: any }) => {
         duration: 2000,
         useNativeDriver: true,
       }).start(() => navigation.replace('Home')); // Start the animation
-    }, 3000); // Wait for 3000 milliseconds = 3 seconds
+    }, 20000); // Wait for 3000 milliseconds = 3 seconds
 
     // Clear timeout if the component is unmounted
     return () => clearTimeout(timer);
