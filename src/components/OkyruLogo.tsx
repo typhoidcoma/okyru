@@ -1,30 +1,33 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import AnimatedLottieView from 'lottie-react-native';
+import Rive, { Fit, Alignment } from 'rive-react-native';
 
 const OkyruLogo = () => {
-  const logoStyle = {
-    width: 320,
-    height: 320,
-  };
-
   return (
-    <View style={styles.logo}>
-      <AnimatedLottieView
-        source={require('../assets/logos/Logo.json')}
-        autoPlay
-        loop
-        style={logoStyle}
+    <View style={styles.container}>
+      <Rive
+        resourceName={'okyru_logo_anim'} // Make sure this points to the correct Rive animation
+        fit={Fit.Fill}
+        alignment={Alignment.Center}
+        autoplay={true}
+        // artboardName="Logo" // Uncomment this line if you have an artboard specified
+        style={styles.logo}
       />
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: 250,
+    height: 250,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // backgroundColor: '#fff',
+  },
   logo: {
-    width: 320,
-    height: 320,
-    // backgroundColor: 'white',
+    width: 250,
+    height: 250,
   },
 });
 
