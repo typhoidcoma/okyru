@@ -1,32 +1,25 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
-
-const iconPaths = {
-  icon1: require('../assets/icons/01_run.svg'),
-
-  // Add more icons as needed
-};
+import React, { FunctionComponent } from 'react';
+import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { useIcons } from './IconProvider'; // Adjust the import path as needed
+import { IconName } from './IconNames'; // Adjust the import path as needed
 
 interface IconProps {
-  iconName: keyof typeof iconPaths; // Make sure iconName is one of the keys in iconPaths
+  iconName: IconName; // Use IconName type instead of string
   size?: number;
   color?: string;
 }
 
-const Icon: React.FC<IconProps> = ({ iconName, size = 24, color = 'black' }) => {
-  const iconData = iconPaths[iconName];
+const Icon: FunctionComponent<IconProps> = ({ iconName, size = 24, color = 'black' }) => {
+  const { getIconComponent } = useIcons(); // Use getIconComponent
+  const IconComponent = getIconComponent(iconName);
 
-  if (!iconData) {
-    // Handle the case where the icon name is not found in iconPaths
-    return null;
+  if (!IconComponent) {
+    return <ActivityIndicator size="small" color="#0000ff" />;
   }
 
   return (
     <View style={styles.container}>
-      <Svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
-        <Path d={iconData} />
-      </Svg>
+      <IconComponent width={size} height={size} fill={color} />
     </View>
   );
 };

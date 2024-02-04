@@ -1,3 +1,15 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json"
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    // ... your existing or additional config settings
+  },
+  "include": [
+    // ... your existing included files/folders
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "declarations.d.ts" // Include the custom declarations file
+  ],
+  "exclude": [
+    // ... your existing excluded files/folders
+  ]
 }

@@ -9,7 +9,7 @@ const HomeScreen = () => {
     <LinearGradient colors={['#EBF3FA', '#DDE7F3', '#E5F0F9']} style={styles.container}>
       <IconButton onPress={() => console.log('Button pressed')} />
       <StartButton onPress={() => console.log('Start button pressed')} />
-      <Icon iconName="icon1" size={24} color="black" />
+      <Icon iconName="01_run" size={48} color="blue" />
     </LinearGradient>
   );
 };
@@ -19,6 +19,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'black',
   },
   text: {
     fontSize: 24,
