@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Animated, Image } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import { Animated, Image } from 'react-native';
+import { GlobalStyles } from '../styles/GlobalStyles';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RouteProp } from '@react-navigation/native';
+import CustomLinearGradient from '../components/CustomLinearGradient';
 // import Icon from './Icon';
 
 type SplashScreenStackParamList = {
@@ -37,26 +38,12 @@ const SplashScreen: React.FC<SplashScreenProps> = ({ navigation }) => {
   }, [navigation, fadeAnim]); // Add fadeAnim to dependency array
 
   return (
-    <LinearGradient colors={['#F1F5F8', '#DDE7F3', '#E5F0F9']} style={styles.container}>
-      <Animated.View style={{ ...styles.container, opacity: fadeAnim }}>
-        <Image source={require('../assets/logos/logo.png')} style={styles.image} />
+    <CustomLinearGradient>
+      <Animated.View style={{ ...GlobalStyles.container, opacity: fadeAnim }}>
+        <Image source={require('../assets/logos/logo.png')} style={GlobalStyles.imageLogo} />
       </Animated.View>
-    </LinearGradient>
+    </CustomLinearGradient>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'transparent',
-  },
-  image: {
-    width: 250, // Or the size you want
-    height: 250, // Or the size you want
-    marginBottom: 20,
-  },
-});
 
 export default SplashScreen;
