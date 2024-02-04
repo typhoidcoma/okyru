@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, Image, ImageSourcePropType } from 'react-native';
 
-interface IconButtonProps {
+interface StartButtonProps {
   onPress: () => void;
 }
 
-const IconButton: React.FC<IconButtonProps> = ({ onPress }) => {
+const StartButton: React.FC<StartButtonProps> = ({ onPress }) => {
   const [buttonState, setButtonState] = useState<'hover' | 'press' | 'inactive'>('inactive');
   const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
 
@@ -38,11 +38,11 @@ const IconButton: React.FC<IconButtonProps> = ({ onPress }) => {
   const getButtonImage = (): ImageSourcePropType => {
     switch (buttonState) {
       case 'hover':
-        return require('../assets/images/buttons/icon_button_hover.png');
+        return require('../assets/images/buttons/start_button_hover.png');
       case 'press':
-        return require('../assets/images/buttons/icon_button_pressed.png');
+        return require('../assets/images/buttons/start_button_inactive.png');
       default:
-        return require('../assets/images/buttons/icon_button_active.png');
+        return require('../assets/images/buttons/start_button_active.png');
     }
   };
 
@@ -67,9 +67,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonImage: {
-    width: 64,
-    height: 64,
+    width: 200,
+    height: 200,
   },
 });
 
-export default IconButton;
+export default StartButton;
