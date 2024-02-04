@@ -12,7 +12,7 @@ const App = () => {
     return (
         <IconProvider>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Icon Test Screen">
+                <Stack.Navigator initialRouteName="Splash">
                     <Stack.Screen
                         name="Splash"
                         component={SplashScreen}
@@ -26,7 +26,7 @@ const App = () => {
                     <Stack.Screen
                         name="Icon Test Screen"
                         component={IconTestScreen}
-                        options={{ headerShown: false }} // This removes the header
+                        options={{ headerShown: true }} // This removes the header
                     />
                 </Stack.Navigator>
             </NavigationContainer>

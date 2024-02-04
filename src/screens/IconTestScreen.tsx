@@ -76,7 +76,7 @@ const IconTestScreen: React.FC = () => {
                 keyExtractor={(item) => item}
                 renderItem={({ item: iconName }) => (
                     <View style={styles.iconContainer}>
-                        <Icon iconName={iconName} size={40} color="blue" />
+                        <Icon iconName={iconName} size={64} color="#EA0008" />
                         <Text style={GlobalStyles.tinyText}>{iconName}</Text>
                     </View>
                 )}

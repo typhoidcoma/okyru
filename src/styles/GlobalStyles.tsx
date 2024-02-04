@@ -32,7 +32,7 @@ export const GlobalStyles = StyleSheet.create({
         justifyContent: 'center',
     },
     tinyText: {
-        fontFamily: 'Nirmala',
+        fontFamily: 'NirmalaB',
         fontSize: FontSizes.tiny,
         color: Colors.text,
     },
