@@ -9,7 +9,8 @@ interface IconProps {
   color?: string;
 }
 
-const Icon: FunctionComponent<IconProps> = ({ iconName, size = 24, color = 'black' }) => {
+const Icon: FunctionComponent<IconProps> = ({ iconName, size = 24, color = 'purple' }) => {
+  // Use IconProps Purple means an error. It should be a color string
   const { getIconComponent } = useIcons(); // Use getIconComponent
   const IconComponent = getIconComponent(iconName);
 
@@ -28,7 +29,6 @@ const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
     justifyContent: 'center',
-    color: 'black',
   },
 });
 

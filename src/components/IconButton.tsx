@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import { View, TouchableOpacity, StyleSheet, Image, ImageSourcePropType } from 'react-native';
+import Icon from './Icon';
+import { IconName } from './IconNames';
 
 interface IconButtonProps {
   onPress: () => void;
+  width?: number;
+  height?: number;
+  svgIconName: IconName;
 }
 
-const IconButton: React.FC<IconButtonProps> = ({ onPress }) => {
+const IconButton: React.FC<IconButtonProps> = ({ onPress, width, height, svgIconName }) => {
   const [buttonState, setButtonState] = useState<'hover' | 'press' | 'inactive'>('inactive');
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const [timeoutId, setTimeoutId] = useState<number | null>(null);
 
   useEffect(() => {
     return () => {
@@ -34,12 +39,13 @@ const IconButton: React.FC<IconButtonProps> = ({ onPress }) => {
       }, 100)
     );
   };
-
+  let iconColor = '#EA0008';
   const getButtonImage = (): ImageSourcePropType => {
     switch (buttonState) {
       case 'hover':
         return require('../assets/images/buttons/icon_button_hover.png');
       case 'press':
+        iconColor = 'blue';
         return require('../assets/images/buttons/icon_button_pressed.png');
       default:
         return require('../assets/images/buttons/icon_button_active.png');
@@ -52,24 +58,41 @@ const IconButton: React.FC<IconButtonProps> = ({ onPress }) => {
       onPressOut={handlePressOut}
       onPress={handlePress}
       activeOpacity={1}
+      style={{ width, height }} // Set the size of the TouchableOpacity
     >
       <View style={styles.buttonContainer}>
-        <Image source={getButtonImage()} style={styles.buttonImage} />
+        <Image source={getButtonImage()} style={[styles.buttonImage, { width, height }]} />
+      </View>
+      <View style={[styles.iconContainer, { width, height }]}>
+        <Icon
+          iconName={svgIconName}
+          size={24} // Set the size of the Icon
+          color={iconColor}
+        />
       </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  iconContainer: {
+    position: 'absolute',
+    zIndex: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    // Removed top, left, right, bottom to allow dynamic sizing
+  },
+
   buttonContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   buttonImage: {
-    width: 64,
-    height: 64,
+    // width and height are now set dynamically in the component
+    resizeMode: 'contain', // Ensure the image scales nicely
   },
+  // ...other styles...
 });
 
 export default IconButton;
