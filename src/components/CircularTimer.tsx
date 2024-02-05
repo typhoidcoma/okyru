@@ -1,16 +1,13 @@
-// CircularTimer.tsx
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import Svg, { Circle, CircleProps } from 'react-native-svg';
-import Animated, {
+import { View, Text, StyleSheet, Easing } from 'react-native';
+import Svg, { Circle } from 'react-native-svg';
+import {
     useSharedValue,
-    useAnimatedProps,
-    withTiming,
-    Easing,
     useDerivedValue,
-    AnimatedProps,
     useAnimatedReaction,
     runOnJS,
+    withTiming,
+    runOnUI,
 } from 'react-native-reanimated';
 import GlobalStyles from '../styles/GlobalStyles';
 
@@ -20,6 +17,7 @@ interface CircularTimerProps {
     duration: number;
     color: string;
     start: boolean;
+    onTimerDone: () => void;
 }
 
 const CircularTimer: React.FunctionComponent<CircularTimerProps> = ({
@@ -28,9 +26,10 @@ const CircularTimer: React.FunctionComponent<CircularTimerProps> = ({
     duration,
     color,
     start,
+    onTimerDone,
 }) => {
     const animatedValue = useSharedValue(0);
-    const [timeText, setTimeText] = useState(duration / 1000); // Renamed from displayTime to timeText
+    const [timeText, setTimeText] = useState(duration / 1000);
 
     const { circumference, halfCircle } = useMemo(() => {
         const calculatedCircumference = 2 * Math.PI * (size / 2 - strokeWidth / 2);
@@ -40,18 +39,27 @@ const CircularTimer: React.FunctionComponent<CircularTimerProps> = ({
 
     useEffect(() => {
         if (start) {
-            animatedValue.value = withTiming(100, {
-                duration: duration,
-                easing: Easing.linear,
-            });
+            // Start the animation
+            animatedValue.value = withTiming(
+                100, // End value
+                {
+                    duration: duration, // Duration in milliseconds
+                    easing: Easing.linear, // Linear easing
+                },
+                (finished) => {
+                    if (finished && onTimerDone) {
+                        runOnUI(() => {
+                            // Call onTimerDone in a worklet on the UI thread
+                            runOnJS(onTimerDone)();
+                        })();
+                    }
+                }
+            );
         } else {
-            animatedValue.value = 0; // Reset timer if start is false
+            // Reset the timer if start is false
+            animatedValue.value = 0;
         }
-    }, [animatedValue, duration, start]);
-
-    const animatedProps = useAnimatedProps<AnimatedProps<CircleProps>>(() => ({
-        strokeDashoffset: circumference - (animatedValue.value / 100) * circumference,
-    }));
+    }, [animatedValue, duration, start, onTimerDone]);
 
     // Derived value for remaining time
     const remainingTime = useDerivedValue(() => {
@@ -65,11 +73,13 @@ const CircularTimer: React.FunctionComponent<CircularTimerProps> = ({
                 runOnJS(setTimeText)(currentRemainingTime);
             }
         },
-        [remainingTime] // dependency array
+        [remainingTime]
     );
 
     function formatTime(timeInSeconds: number): string {
-        const minutes = Math.floor(timeInSeconds / 60);
+        const minutes = Math.floor(timeInSeconds / 60)
+            .toString()
+            .padStart(2, '0');
         const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
         return `${minutes}:${seconds}`;
     }
@@ -77,8 +87,7 @@ const CircularTimer: React.FunctionComponent<CircularTimerProps> = ({
     return (
         <View style={styles.container}>
             <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
-                <AnimatedCircle
-                    animatedProps={animatedProps}
+                <Circle
                     cx={halfCircle.toString()}
                     cy={halfCircle.toString()}
                     r={(halfCircle - strokeWidth / 2).toString()}
@@ -86,6 +95,10 @@ const CircularTimer: React.FunctionComponent<CircularTimerProps> = ({
                     strokeWidth={strokeWidth.toString()}
                     strokeLinecap="round"
                     strokeDasharray={circumference.toString()}
+                    strokeDashoffset={(
+                        circumference -
+                        (animatedValue.value / 100) * circumference
+                    ).toString()}
                     fill="transparent"
                     rotation="-90"
                     origin={`${halfCircle}, ${halfCircle}`}
@@ -110,7 +123,5 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
 });
-
-const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export default CircularTimer;

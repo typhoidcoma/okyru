@@ -3,9 +3,10 @@ import { View, TouchableOpacity, StyleSheet, Image, ImageSourcePropType } from '
 
 interface StartButtonProps {
     onPress: () => void;
+    isRunning: boolean; // New prop to indicate whether the timer is running
 }
 
-const StartButton: React.FC<StartButtonProps> = ({ onPress }) => {
+const StartButton: React.FC<StartButtonProps> = ({ onPress, isRunning }) => {
     const [buttonState, setButtonState] = useState<'hover' | 'press' | 'inactive'>('inactive');
     const [timeoutId, setTimeoutId] = useState<number | null>(null);
 
@@ -18,31 +19,36 @@ const StartButton: React.FC<StartButtonProps> = ({ onPress }) => {
     }, [timeoutId]);
 
     const handlePressIn = () => {
-        setButtonState('press');
+        if (!isRunning) {
+            setButtonState('inactive');
+        }
     };
 
     const handlePressOut = () => {
-        setButtonState('inactive');
+        if (!isRunning) {
+            setButtonState('press');
+        }
     };
 
     const handlePress = () => {
-        setButtonState('press');
-        onPress();
-        setTimeoutId(
-            setTimeout(() => {
-                setButtonState('inactive');
-            }, 100)
-        );
+        if (!isRunning) {
+            setButtonState('press');
+            onPress();
+            setTimeoutId(
+                setTimeout(() => {
+                    setButtonState('press');
+                }, 100)
+            );
+        }
     };
 
     const getButtonImage = (): ImageSourcePropType => {
-        switch (buttonState) {
-            case 'hover':
-                return require('../assets/images/buttons/start_button_hover.png');
-            case 'press':
-                return require('../assets/images/buttons/start_button_inactive.png');
-            default:
-                return require('../assets/images/buttons/start_button_active.png');
+        if (buttonState === 'hover') {
+            return require('../assets/images/buttons/start_button_hover.png');
+        } else if (buttonState === 'press') {
+            return require('../assets/images/buttons/start_button_inactive.png');
+        } else {
+            return require('../assets/images/buttons/start_button_active.png');
         }
     };
 

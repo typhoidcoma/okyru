@@ -1,18 +1,21 @@
-// HomeScreen.tsx
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomLinearGradient from '../components/CustomLinearGradient';
 import IconButton from '../components/IconButton';
 import StartButton from '../components/StartButton';
 import Icon from '../components/Icon';
-import CircularTimer from '../components/CircularTimer';
+import CircularTimer from '../components/CircularTimer'; // Import CircularTimer
 import { GlobalStyles } from '../styles/GlobalStyles';
 
 const HomeScreen = () => {
-    const [startTimer, setStartTimer] = useState(false);
+    const [isTimerRunning, setIsTimerRunning] = useState(false);
 
-    const handleStartPress = () => {
-        setStartTimer(true); // Start the timer
+    const handleStartButtonPress = () => {
+        setIsTimerRunning(false); // Start the timer when the "Start" button is pressed
+    };
+
+    const handleTimerDone = () => {
+        setIsTimerRunning(true); // Set isTimerRunning to false when the timer is done
     };
 
     return (
@@ -21,9 +24,10 @@ const HomeScreen = () => {
                 <CircularTimer
                     size={160}
                     strokeWidth={10}
-                    duration={10000} // Duration of the countdown in milliseconds (10 seconds)
+                    duration={50000} // Duration of the countdown in milliseconds (10 seconds)
                     color="#EA0008"
-                    start={startTimer}
+                    start={true} // Pass isTimerRunning as the start prop
+                    onTimerDone={handleTimerDone} // Handle timer done event
                 />
 
                 <IconButton
@@ -32,7 +36,7 @@ const HomeScreen = () => {
                     height={64}
                     onPress={() => console.log('Button pressed')}
                 />
-                <StartButton onPress={handleStartPress} />
+                <StartButton onPress={handleStartButtonPress} isRunning={isTimerRunning} />
                 <Text style={[GlobalStyles.text, styles.appName]}>okyru</Text>
                 <Icon iconName="26_Menu" size={32} color="red" />
             </View>
