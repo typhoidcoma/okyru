@@ -5,11 +5,14 @@ import CustomLinearGradient from '../components/CustomLinearGradient';
 import IconButton from '../components/IconButton';
 import StartButton from '../components/StartButton';
 import Icon from '../components/Icon';
+import CircularTimer from '../components/CircularTimer';
 
 const HomeScreen = () => {
     return (
         <CustomLinearGradient style={styles.gradient}>
             <View style={styles.container}>
+                <CircularTimer size={200} strokeWidth={15} duration={60000} color="tomato" />
+
                 <IconButton
                     svgIconName="01_run"
                     width={64}
