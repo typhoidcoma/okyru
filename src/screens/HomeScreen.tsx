@@ -1,14 +1,13 @@
-import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomLinearGradient from '../components/CustomLinearGradient';
 import IconButton from '../components/IconButton';
-import StartButton from '../components/StartButton';
+
 import Icon from '../components/Icon';
 import CircularTimer from '../components/CircularTimer'; // Import the CircularTimer component
 import { GlobalStyles } from '../styles/GlobalStyles';
+import React from 'react';
 
 const HomeScreen = () => {
-
     return (
         <CustomLinearGradient style={styles.gradient}>
             <View style={styles.container}>
@@ -16,10 +15,9 @@ const HomeScreen = () => {
                 <CircularTimer
                     size={250}
                     strokeWidth={10}
-                    time={2} // Duration of the countdown in seconds (20 seconds)
+                    time={60} // Duration of the countdown in seconds (20 seconds)
                     color="#EA0008"
                     onTimerDone={() => console.log('Timer done!')}
-
                 />
 
                 {/* Rest of your UI components */}
@@ -33,8 +31,9 @@ const HomeScreen = () => {
                     height={64}
                     onPress={() => console.log('Button pressed')}
                 />
-                <Text style={[GlobalStyles.text, styles.appName]}>okyru</Text>
+
                 <Icon iconName="26_Menu" size={32} color="red" />
+                <Text style={[GlobalStyles.text, styles.appName]}>okyru</Text>
             </View>
         </CustomLinearGradient>
     );

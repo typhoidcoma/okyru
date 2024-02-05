@@ -8,7 +8,7 @@ interface StartButtonProps {
 
 const StartButton: React.FC<StartButtonProps> = ({ onPress, isRunning }) => {
     const [buttonState, setButtonState] = useState<'hover' | 'press' | 'inactive'>('inactive');
-    const [timeoutId, setTimeoutId] = useState<number | null>(null);
+    const [timeoutId] = useState<number | null>(null);
 
     useEffect(() => {
         return () => {
@@ -18,29 +18,31 @@ const StartButton: React.FC<StartButtonProps> = ({ onPress, isRunning }) => {
         };
     }, [timeoutId]);
 
-    const handlePressIn = () => {
+    useEffect(() => {
+        // Update the buttonState based on the isRunning prop
         if (isRunning) {
-            setButtonState('press');
-            console.log(isRunning);
+            setButtonState('inactive'); // Timer is running, set to inactive
+        } else {
+            setButtonState('press'); // Timer is not running, set to press
+        }
+    }, [isRunning]);
+
+    const handlePressIn = () => {
+        if (!isRunning) {
+            setButtonState('hover');
         }
     };
 
     const handlePressOut = () => {
         if (!isRunning) {
             setButtonState('inactive');
-            console.log(isRunning);
         }
     };
 
     const handlePress = () => {
         if (!isRunning) {
             setButtonState('press');
-            console.log(isRunning);
             onPress();
-            const id = setTimeout(() => {
-                setButtonState('press');
-            }, 100);
-            setTimeoutId(id);
         }
     };
 
@@ -48,9 +50,9 @@ const StartButton: React.FC<StartButtonProps> = ({ onPress, isRunning }) => {
         if (buttonState === 'hover') {
             return require('../assets/images/buttons/start_button_hover.png');
         } else if (buttonState === 'press') {
-            return require('../assets/images/buttons/start_button_inactive.png');
-        } else {
             return require('../assets/images/buttons/start_button_active.png');
+        } else {
+            return require('../assets/images/buttons/start_button_inactive.png');
         }
     };
 

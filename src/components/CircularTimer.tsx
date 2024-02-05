@@ -41,6 +41,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
         if (currentTime > 0) {
             timer = setInterval(() => {
                 setCurrentTime((prevTime) => prevTime - 1);
+                console.log('Current time: ', currentTime);
             }, 1000);
         } else {
             if (onTimerDone) {
@@ -105,7 +106,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'pink',
+        // backgroundColor: 'pink',
     },
     textContainer: {
         position: 'absolute',
