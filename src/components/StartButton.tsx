@@ -19,26 +19,28 @@ const StartButton: React.FC<StartButtonProps> = ({ onPress, isRunning }) => {
     }, [timeoutId]);
 
     const handlePressIn = () => {
-        if (!isRunning) {
-            setButtonState('inactive');
+        if (isRunning) {
+            setButtonState('press');
+            console.log(isRunning);
         }
     };
 
     const handlePressOut = () => {
         if (!isRunning) {
-            setButtonState('press');
+            setButtonState('inactive');
+            console.log(isRunning);
         }
     };
 
     const handlePress = () => {
         if (!isRunning) {
             setButtonState('press');
+            console.log(isRunning);
             onPress();
-            setTimeoutId(
-                setTimeout(() => {
-                    setButtonState('press');
-                }, 100)
-            );
+            const id = setTimeout(() => {
+                setButtonState('press');
+            }, 100);
+            setTimeoutId(id);
         }
     };
 

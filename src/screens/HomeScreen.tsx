@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import CustomLinearGradient from '../components/CustomLinearGradient';
 import IconButton from '../components/IconButton';
@@ -8,20 +8,6 @@ import CircularTimer from '../components/CircularTimer'; // Import the CircularT
 import { GlobalStyles } from '../styles/GlobalStyles';
 
 const HomeScreen = () => {
-    // State to track if the timer is running
-    const [isTimerRunning, setIsTimerRunning] = useState(false);
-
-    // Handler for starting the timer
-    const handleStartPress = () => {
-        console.log('Timer True');
-        setIsTimerRunning(true); // Start the timer when the "Start" button is pressed
-    };
-
-    // Handler for when the timer is done
-    const handleTimerDone = () => {
-        console.log('Timer done');
-        setIsTimerRunning(false); // Set isTimerRunning to false when the timer is done
-    };
 
     return (
         <CustomLinearGradient style={styles.gradient}>
@@ -30,15 +16,15 @@ const HomeScreen = () => {
                 <CircularTimer
                     size={250}
                     strokeWidth={10}
-                    time={200} // Duration of the countdown in seconds (20 seconds)
+                    time={2} // Duration of the countdown in seconds (20 seconds)
                     color="#EA0008"
-                    // start={isTimerRunning} // Pass isTimerRunning as the start prop
-                    onTimerDone={handleTimerDone} // Handle timer done event
+                    onTimerDone={() => console.log('Timer done!')}
+
                 />
 
                 {/* Rest of your UI components */}
                 {/* Start Button */}
-                <StartButton onPress={handleStartPress} isRunning={isTimerRunning} />
+                {/* <StartButton onPress={handleRestartPress} isRunning={isTimerRunning} /> */}
 
                 {/* Other UI Components */}
                 <IconButton
