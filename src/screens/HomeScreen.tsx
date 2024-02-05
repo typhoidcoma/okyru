@@ -1,21 +1,29 @@
-import React from 'react';
+// HomeScreen.tsx
+import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { GlobalStyles } from '../styles/GlobalStyles';
 import CustomLinearGradient from '../components/CustomLinearGradient';
 import IconButton from '../components/IconButton';
 import StartButton from '../components/StartButton';
 import Icon from '../components/Icon';
 import CircularTimer from '../components/CircularTimer';
+import { GlobalStyles } from '../styles/GlobalStyles';
 
 const HomeScreen = () => {
+    const [startTimer, setStartTimer] = useState(false);
+
+    const handleStartPress = () => {
+        setStartTimer(true); // Start the timer
+    };
+
     return (
         <CustomLinearGradient style={styles.gradient}>
             <View style={styles.container}>
                 <CircularTimer
-                    size={200}
-                    strokeWidth={5}
-                    duration={20000} // Duration of the countdown in milliseconds
+                    size={160}
+                    strokeWidth={10}
+                    duration={10000} // Duration of the countdown in milliseconds (10 seconds)
                     color="#EA0008"
+                    start={startTimer}
                 />
 
                 <IconButton
@@ -24,7 +32,7 @@ const HomeScreen = () => {
                     height={64}
                     onPress={() => console.log('Button pressed')}
                 />
-                <StartButton onPress={() => console.log('Start button pressed')} />
+                <StartButton onPress={handleStartPress} />
                 <Text style={[GlobalStyles.text, styles.appName]}>okyru</Text>
                 <Icon iconName="26_Menu" size={32} color="red" />
             </View>

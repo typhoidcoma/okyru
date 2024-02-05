@@ -41,6 +41,11 @@ export const GlobalStyles = StyleSheet.create({
         fontSize: FontSizes.medium,
         color: Colors.text,
     },
+    timerText: {
+        fontFamily: 'Nirmala',
+        fontSize: 32,
+        color: Colors.text,
+    },
     headerText: {
         fontFamily: 'NirmalaB',
         fontSize: FontSizes.large,
