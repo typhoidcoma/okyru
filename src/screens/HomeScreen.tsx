@@ -8,7 +8,7 @@ import Icon from '../components/Icon';
 const HomeScreen = () => {
     return (
         <CustomLinearGradient>
-            <View style={GlobalStyles.container}>
+            <View>
                 <IconButton
                     svgIconName="26_Menu"
                     width={64}

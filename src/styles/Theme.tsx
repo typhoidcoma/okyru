@@ -5,7 +5,7 @@ import { DefaultTheme, Theme } from '@react-navigation/native';
 const LightColors = {
     primary: '#EA0008',
     secondary: '#2ecc71',
-    background: '#E3EDF7',
+    background: '#2ecc71',
     text: '#EA0008',
     // ... more colors for light theme
 };
