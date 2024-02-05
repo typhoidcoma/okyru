@@ -5,23 +5,24 @@ import HomeScreen from './src/screens/HomeScreen';
 import SplashScreen from './src/screens/SplashScreen';
 import IconTestScreen from './src/screens/IconTestScreen';
 import { IconProvider } from './src/components/IconProvider';
+import { LightTheme } from './src/styles/Theme';
 
 const Stack = createStackNavigator();
 
 const App = () => {
     return (
         <IconProvider>
-            <NavigationContainer>
+            <NavigationContainer theme={LightTheme}>
                 <Stack.Navigator initialRouteName="Splash">
                     <Stack.Screen
                         name="Splash"
                         component={SplashScreen}
-                        options={{ headerShown: false }} // This removes the header
+                        options={{ headerShown: false, cardStyle: { backgroundColor: 'red' } }} // This removes the header
                     />
                     <Stack.Screen
                         name="Home"
                         component={HomeScreen}
-                        options={{ headerShown: false }} // This removes the header
+                        options={{ headerShown: false, cardStyle: { backgroundColor: 'red' } }} // This removes the header
                     />
                     <Stack.Screen
                         name="Icon Test Screen"

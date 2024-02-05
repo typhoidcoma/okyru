@@ -2,12 +2,10 @@
 import { createContext, useContext } from 'react';
 import IconMapping from './IconMapping';
 import { IconName } from './IconNames';
-
+import React from 'react';
 interface IconContextState {
     getIconComponent: (iconName: IconName) => React.FC<React.SVGProps<SVGSVGElement>> | null;
 }
-
-import React from 'react';
 
 const IconContext = createContext<IconContextState>({
     getIconComponent: () => null,
