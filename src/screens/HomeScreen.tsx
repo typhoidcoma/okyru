@@ -4,7 +4,7 @@ import CustomLinearGradient from '../components/CustomLinearGradient';
 import IconButton from '../components/IconButton';
 import StartButton from '../components/StartButton';
 import Icon from '../components/Icon';
-import CircularTimer from '../components/CircularTimer';
+import CircularTimer from '../components/CircularTimer'; // Import the CircularTimer component
 import { GlobalStyles } from '../styles/GlobalStyles';
 
 const HomeScreen = () => {
@@ -32,7 +32,7 @@ const HomeScreen = () => {
                     strokeWidth={10}
                     time={200} // Duration of the countdown in seconds (20 seconds)
                     color="#EA0008"
-                    // start={true} // Pass isTimerRunning as the start prop
+                    // start={isTimerRunning} // Pass isTimerRunning as the start prop
                     onTimerDone={handleTimerDone} // Handle timer done event
                 />
 
