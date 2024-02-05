@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { View, StyleSheet } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { Circle, CircleProps } from 'react-native-svg';
 import Animated, {
     useSharedValue,
     useAnimatedProps,
     withTiming,
     Easing,
+    AnimatedProps,
 } from 'react-native-reanimated';
 
 interface CircularTimerProps {
@@ -15,12 +16,20 @@ interface CircularTimerProps {
     color: string;
 }
 
-const CircularTimer: React.FC<CircularTimerProps> = ({ size, strokeWidth, duration, color }) => {
+const CircularTimer: React.FunctionComponent<CircularTimerProps> = ({
+    size,
+    strokeWidth,
+    duration,
+    color,
+}) => {
     const animatedValue = useSharedValue(0);
 
-    // Calculate the circumference of the circle
-    const circumference = 2 * Math.PI * (size / 2 - strokeWidth / 2);
-    const halfCircle = size / 2;
+    // Encapsulate calculations
+    const { circumference, halfCircle } = useMemo(() => {
+        const calculatedCircumference = 2 * Math.PI * (size / 2 - strokeWidth / 2);
+        const calculatedHalfCircle = size / 2;
+        return { circumference: calculatedCircumference, halfCircle: calculatedHalfCircle };
+    }, [size, strokeWidth]);
 
     useEffect(() => {
         animatedValue.value = withTiming(100, {
@@ -29,8 +38,8 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ size, strokeWidth, durati
         });
     }, [animatedValue, duration]);
 
-    const animatedProps = useAnimatedProps(() => ({
-        strokeDashoffset: (1 - animatedValue.value / 100) * circumference,
+    const animatedProps = useAnimatedProps<AnimatedProps<CircleProps>>(() => ({
+        strokeDashoffset: circumference - (animatedValue.value / 100) * circumference,
     }));
 
     return (
@@ -38,13 +47,13 @@ const CircularTimer: React.FC<CircularTimerProps> = ({ size, strokeWidth, durati
             <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
                 <AnimatedCircle
                     animatedProps={animatedProps}
-                    cx={halfCircle}
-                    cy={halfCircle}
-                    r={halfCircle - strokeWidth / 2}
+                    cx={halfCircle.toString()}
+                    cy={halfCircle.toString()}
+                    r={(halfCircle - strokeWidth / 2).toString()}
                     stroke={color}
-                    strokeWidth={strokeWidth}
+                    strokeWidth={strokeWidth.toString()}
                     strokeLinecap="round"
-                    strokeDasharray={circumference}
+                    strokeDasharray={circumference.toString()}
                     fill="transparent"
                     rotation="-90"
                     origin={`${halfCircle}, ${halfCircle}`}

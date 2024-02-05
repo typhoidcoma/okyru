@@ -11,7 +11,12 @@ const HomeScreen = () => {
     return (
         <CustomLinearGradient style={styles.gradient}>
             <View style={styles.container}>
-                <CircularTimer size={200} strokeWidth={15} duration={60000} color="tomato" />
+                <CircularTimer
+                    size={200}
+                    strokeWidth={5}
+                    duration={5000} // Duration of the countdown in milliseconds
+                    color="#3498db"
+                />
 
                 <IconButton
                     svgIconName="01_run"
