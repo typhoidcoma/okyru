@@ -4,39 +4,49 @@ import CustomLinearGradient from '../components/CustomLinearGradient';
 import IconButton from '../components/IconButton';
 import StartButton from '../components/StartButton';
 import Icon from '../components/Icon';
-import CircularTimer from '../components/CircularTimer'; // Import CircularTimer
+import CircularTimer from '../components/CircularTimer';
 import { GlobalStyles } from '../styles/GlobalStyles';
 
 const HomeScreen = () => {
+    // State to track if the timer is running
     const [isTimerRunning, setIsTimerRunning] = useState(false);
 
-    const handleStartButtonPress = () => {
-        setIsTimerRunning(false); // Start the timer when the "Start" button is pressed
+    // Handler for starting the timer
+    const handleStartPress = () => {
+        console.log('Timer True');
+        setIsTimerRunning(true); // Start the timer when the "Start" button is pressed
     };
 
+    // Handler for when the timer is done
     const handleTimerDone = () => {
-        setIsTimerRunning(true); // Set isTimerRunning to false when the timer is done
+        console.log('Timer done');
+        setIsTimerRunning(false); // Set isTimerRunning to false when the timer is done
     };
 
     return (
         <CustomLinearGradient style={styles.gradient}>
             <View style={styles.container}>
+                {/* Circular Timer */}
                 <CircularTimer
-                    size={160}
+                    size={250}
                     strokeWidth={10}
-                    duration={50000} // Duration of the countdown in milliseconds (10 seconds)
+                    time={200} // Duration of the countdown in seconds (20 seconds)
                     color="#EA0008"
-                    start={true} // Pass isTimerRunning as the start prop
+                    // start={true} // Pass isTimerRunning as the start prop
                     onTimerDone={handleTimerDone} // Handle timer done event
                 />
 
+                {/* Rest of your UI components */}
+                {/* Start Button */}
+                <StartButton onPress={handleStartPress} isRunning={isTimerRunning} />
+
+                {/* Other UI Components */}
                 <IconButton
                     svgIconName="01_run"
                     width={64}
                     height={64}
                     onPress={() => console.log('Button pressed')}
                 />
-                <StartButton onPress={handleStartButtonPress} isRunning={isTimerRunning} />
                 <Text style={[GlobalStyles.text, styles.appName]}>okyru</Text>
                 <Icon iconName="26_Menu" size={32} color="red" />
             </View>

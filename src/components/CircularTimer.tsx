@@ -1,111 +1,71 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, Easing } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
-import {
-    useSharedValue,
-    useDerivedValue,
-    useAnimatedReaction,
-    runOnJS,
-    withTiming,
-    runOnUI,
-} from 'react-native-reanimated';
 import GlobalStyles from '../styles/GlobalStyles';
 
 interface CircularTimerProps {
     size: number;
     strokeWidth: number;
-    duration: number;
+    time: number; // Input time in seconds
     color: string;
-    start: boolean;
     onTimerDone: () => void;
 }
 
-const CircularTimer: React.FunctionComponent<CircularTimerProps> = ({
+const CircularTimer: React.FC<CircularTimerProps> = ({
     size,
     strokeWidth,
-    duration,
+    time,
     color,
-    start,
     onTimerDone,
 }) => {
-    const animatedValue = useSharedValue(0);
-    const [timeText, setTimeText] = useState(duration / 1000);
-
-    const { circumference, halfCircle } = useMemo(() => {
-        const calculatedCircumference = 2 * Math.PI * (size / 2 - strokeWidth / 2);
-        const calculatedHalfCircle = size / 2;
-        return { circumference: calculatedCircumference, halfCircle: calculatedHalfCircle };
-    }, [size, strokeWidth]);
+    const [currentTime, setCurrentTime] = useState(time);
 
     useEffect(() => {
-        if (start) {
-            // Start the animation
-            animatedValue.value = withTiming(
-                100, // End value
-                {
-                    duration: duration, // Duration in milliseconds
-                    easing: Easing.linear, // Linear easing
-                },
-                (finished) => {
-                    if (finished && onTimerDone) {
-                        runOnUI(() => {
-                            // Call onTimerDone in a worklet on the UI thread
-                            runOnJS(onTimerDone)();
-                        })();
-                    }
-                }
-            );
+        let timer: NodeJS.Timeout;
+
+        if (currentTime > 0) {
+            timer = setInterval(() => {
+                setCurrentTime((prevTime) => prevTime - 1);
+            }, 1000);
         } else {
-            // Reset the timer if start is false
-            animatedValue.value = 0;
-        }
-    }, [animatedValue, duration, start, onTimerDone]);
-
-    // Derived value for remaining time
-    const remainingTime = useDerivedValue(() => {
-        return Math.floor(((100 - animatedValue.value) / 100) * (duration / 1000));
-    });
-
-    useAnimatedReaction(
-        () => remainingTime.value,
-        (currentRemainingTime, previousRemainingTime) => {
-            if (currentRemainingTime !== previousRemainingTime) {
-                runOnJS(setTimeText)(currentRemainingTime);
+            if (onTimerDone) {
+                onTimerDone();
             }
-        },
-        [remainingTime]
-    );
+        }
 
-    function formatTime(timeInSeconds: number): string {
-        const minutes = Math.floor(timeInSeconds / 60)
+        return () => clearInterval(timer);
+    }, [currentTime, onTimerDone]);
+
+    const circumference = 2 * Math.PI * (size / 2 - strokeWidth / 2);
+    const strokeDashoffset = (currentTime / time) * circumference;
+
+    const formatTime = (seconds: number) => {
+        const minutes = Math.floor(seconds / 60)
             .toString()
             .padStart(2, '0');
-        const seconds = (timeInSeconds % 60).toString().padStart(2, '0');
-        return `${minutes}:${seconds}`;
-    }
+        const remainingSeconds = (seconds % 60).toString().padStart(2, '0');
+        return `${minutes}:${remainingSeconds}`;
+    };
 
     return (
         <View style={styles.container}>
             <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
                 <Circle
-                    cx={halfCircle.toString()}
-                    cy={halfCircle.toString()}
-                    r={(halfCircle - strokeWidth / 2).toString()}
+                    cx={size / 2}
+                    cy={size / 2}
+                    r={size / 2 - strokeWidth / 2}
                     stroke={color}
-                    strokeWidth={strokeWidth.toString()}
+                    strokeWidth={strokeWidth}
                     strokeLinecap="round"
-                    strokeDasharray={circumference.toString()}
-                    strokeDashoffset={(
-                        circumference -
-                        (animatedValue.value / 100) * circumference
-                    ).toString()}
+                    strokeDasharray={circumference}
+                    strokeDashoffset={strokeDashoffset}
                     fill="transparent"
                     rotation="-90"
-                    origin={`${halfCircle}, ${halfCircle}`}
+                    origin={`${size / 2}, ${size / 2}`}
                 />
             </Svg>
-            <View style={[styles.textContainer]}>
-                <Text style={GlobalStyles.timerText}>{formatTime(timeText)}</Text>
+            <View style={styles.textContainer}>
+                <Text style={GlobalStyles.timerText}>{formatTime(currentTime)}</Text>
             </View>
         </View>
     );
