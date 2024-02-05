@@ -14,8 +14,8 @@ const HomeScreen = () => {
                 <CircularTimer
                     size={200}
                     strokeWidth={5}
-                    duration={5000} // Duration of the countdown in milliseconds
-                    color="#3498db"
+                    duration={20000} // Duration of the countdown in milliseconds
+                    color="#EA0008"
                 />
 
                 <IconButton
