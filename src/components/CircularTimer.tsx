@@ -1,5 +1,5 @@
 import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import GlobalStyles from '../styles/GlobalStyles';
 import { useSharedValue } from 'react-native-reanimated';
@@ -21,7 +21,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     { size, strokeWidth, time, color, onTimerDone },
     ref
 ) => {
-    const [currentTime, setCurrentTime] = useState(time);
+    const [currentTime, setCurrentTime] = useState<number | null>(null); // Initialize to null;
     const animatedValue = useSharedValue(time);
 
     // Function to reset the timer to its initial time
@@ -38,9 +38,9 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     useEffect(() => {
         let timer: NodeJS.Timeout;
 
-        if (currentTime > 0) {
+        if (currentTime !== null && currentTime > 0) {
             timer = setInterval(() => {
-                setCurrentTime((prevTime) => prevTime - 1);
+                setCurrentTime((prevTime) => prevTime! - 1);
                 console.log('Current time: ', currentTime);
             }, 1000);
         } else {
@@ -53,7 +53,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     }, [currentTime, onTimerDone]);
 
     const circumference = 2 * Math.PI * (size / 2 - strokeWidth / 2);
-    const strokeDashoffset = (currentTime / time) * circumference;
+    const strokeDashoffset = (currentTime! / time) * circumference;
 
     const formatTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60)
@@ -62,34 +62,37 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
         const remainingSeconds = (seconds % 60).toString().padStart(2, '0');
         return `${minutes}:${remainingSeconds}`;
     };
+    const image = require('../assets/images/backgrounds/timerBG_light.png');
 
     return (
         <View style={styles.container}>
             <View style={styles.timerCircleContainer}>
-                <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
-                    <Circle
-                        cx={size / 2}
-                        cy={size / 2}
-                        r={size / 2 - strokeWidth / 2}
-                        stroke={color}
-                        strokeWidth={strokeWidth}
-                        strokeLinecap="round"
-                        strokeDasharray={circumference}
-                        strokeDashoffset={strokeDashoffset}
-                        fill="transparent"
-                        rotation="-90"
-                        origin={`${size / 2}, ${size / 2}`}
-                    />
-                </Svg>
-                {/* Text in the middle of the circle */}
-                <View style={styles.textContainer}>
-                    <Text style={GlobalStyles.timerText}>{formatTime(currentTime)}</Text>
-                </View>
+                <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+                    <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
+                        <Circle
+                            cx={size / 2}
+                            cy={size / 2}
+                            r={size / 2 - strokeWidth / 2}
+                            stroke={color}
+                            strokeWidth={strokeWidth}
+                            strokeLinecap="round"
+                            strokeDasharray={circumference}
+                            strokeDashoffset={strokeDashoffset}
+                            fill="transparent"
+                            rotation="-90"
+                            origin={`${size / 2}, ${size / 2}`}
+                        />
+                    </Svg>
+                    {/* Text in the middle of the circle */}
+                    <View style={styles.textContainer}>
+                        <Text style={GlobalStyles.timerText}>{formatTime(currentTime!)}</Text>
+                    </View>
+                </ImageBackground>
             </View>
 
             <View style={styles.startButtonContainer}>
                 {/* StartButton to control the timer */}
-                <StartButton onPress={resetTimer} isRunning={currentTime > 0} />
+                <StartButton onPress={resetTimer} isRunning={currentTime! > 0} />
             </View>
         </View>
     );
@@ -100,7 +103,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        // backgroundColor: 'pink',
+        backgroundColor: 'transparent',
     },
     timerCircleContainer: {
         flex: 1,
@@ -113,11 +116,15 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         width: '100%',
-        height: '100%',
+        // height: '100%',
     },
     startButtonContainer: {
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    image: {
+        flex: 1,
+        justifyContent: 'center',
     },
 });
 

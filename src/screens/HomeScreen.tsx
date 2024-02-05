@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         flex: 1, // Ensure container takes up the whole gradient space
         alignItems: 'center', // Center items horizontally
         justifyContent: 'center', // Center items vertically
-        padding: 20, // Add padding around the content
+        // padding: 20, // Add padding around the content
     },
     appName: {
         marginVertical: 20, // Add vertical space around the app name
