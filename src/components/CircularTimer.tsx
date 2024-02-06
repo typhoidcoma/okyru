@@ -1,9 +1,9 @@
-import React, { useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import { View, Text, StyleSheet, ImageBackground } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import GlobalStyles from '../styles/GlobalStyles';
-import { useSharedValue } from 'react-native-reanimated';
-import StartButton from './StartButton'; // Import the StartButton component
+import BackgroundTimer from 'react-native-background-timer';
+import StartButton from './StartButton';
 
 interface CircularTimerProps {
     size: number;
@@ -21,12 +21,12 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     { size, strokeWidth, time, color, onTimerDone },
     ref
 ) => {
-    const [currentTime, setCurrentTime] = useState<number | null>(null); // Initialize to null;
-    const animatedValue = useSharedValue(time);
+    const [currentTime, setCurrentTime] = useState<number | null>(null);
+    const animatedValue = useRef<number>(time);
 
     // Function to reset the timer to its initial time
     const resetTimer = () => {
-        animatedValue.value = time;
+        animatedValue.current = time;
         setCurrentTime(time);
     };
 
@@ -36,21 +36,36 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     }));
 
     useEffect(() => {
-        let timer: NodeJS.Timeout;
+        let timer: number | null = null;
 
-        if (currentTime !== null && currentTime > 0) {
-            timer = setInterval(() => {
-                setCurrentTime((prevTime) => prevTime! - 1);
-                console.log('Current time: ', currentTime);
+        const startBackgroundTimer = () => {
+            timer = BackgroundTimer.setInterval(() => {
+                setCurrentTime((prevTime) => {
+                    if (prevTime! > 0) {
+                        return prevTime! - 1;
+                    } else {
+                        if (onTimerDone) {
+                            onTimerDone();
+                        }
+                        return prevTime;
+                    }
+                });
             }, 1000);
-        } else {
-            if (onTimerDone) {
-                onTimerDone();
-            }
-        }
+        };
 
-        return () => clearInterval(timer);
-    }, [currentTime, onTimerDone]);
+        const stopBackgroundTimer = () => {
+            if (timer !== null) {
+                BackgroundTimer.clearInterval(timer);
+                timer = null;
+            }
+        };
+
+        startBackgroundTimer();
+
+        return () => {
+            stopBackgroundTimer();
+        };
+    }, [onTimerDone]);
 
     const circumference = 2 * Math.PI * (size / 2 - strokeWidth / 2);
     const strokeDashoffset = (currentTime! / time) * circumference;
@@ -62,6 +77,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
         const remainingSeconds = (seconds % 60).toString().padStart(2, '0');
         return `${minutes}:${remainingSeconds}`;
     };
+
     const image = require('../assets/images/backgrounds/timerBG_light.png');
 
     return (
@@ -101,19 +117,13 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-
         justifyContent: 'center',
         alignItems: 'center',
-        // backgroundColor: 'blue',
     },
     imagaContainer: {
-        // flex: 1,
         alignItems: 'center',
-        // position: 'relative',
         justifyContent: 'center',
         alignContent: 'center',
-        // backgroundColor: 'purple',
-        // padding: 20,
         width: 400,
         height: 400,
     },
@@ -121,22 +131,16 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        // backgroundColor: 'pink',
         position: 'absolute',
     },
     textContainer: {
         position: 'absolute',
-        // justifyContent: 'center',
         alignItems: 'center',
         transform: [{ translateY: -10 }],
     },
     startButtonContainer: {
         marginTop: 100,
-        // marginBottom: 2,
         marginVertical: 20,
-        // justifyContent: 'center',
-        // alignItems: 'center',
-        // backgroundColor: 'yellow',
     },
 });
 
