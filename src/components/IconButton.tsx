@@ -66,7 +66,7 @@ const IconButton: React.FC<IconButtonProps> = ({ onPress, width, height, svgIcon
             <View style={[styles.iconContainer, { width, height }]}>
                 <Icon
                     iconName={svgIconName}
-                    size={24} // Set the size of the Icon
+                    size={32} // Set the size of the Icon
                     color={iconColor}
                 />
             </View>
@@ -79,6 +79,8 @@ const styles = StyleSheet.create({
         position: 'absolute',
         justifyContent: 'center',
         alignItems: 'center',
+        width: '100%',
+        height: '100%',
     },
 
     buttonContainer: {

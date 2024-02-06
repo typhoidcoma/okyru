@@ -25,8 +25,8 @@ const HomeScreen = () => {
                 {/* Other UI Components */}
                 <IconButton
                     svgIconName="26_Menu"
-                    width={64}
-                    height={64}
+                    width={80}
+                    height={80}
                     onPress={() => console.log('Button pressed')}
                 />
 
@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         alignItems: 'center', // Center the content
     },
     appName: {
-        marginVertical: 20, // Add vertical space around the app name
+        marginVertical: 10, // Add vertical space around the app name
         alignSelf: 'auto', // Center the app name
     },
     buttonStyle: {
