@@ -50,9 +50,9 @@ const StartButton: React.FC<StartButtonProps> = ({ onPress, isRunning }) => {
         if (buttonState === 'hover') {
             return require('../assets/images/buttons/start_button_hover.png');
         } else if (buttonState === 'press') {
-            return require('../assets/images/buttons/start_button_active.png');
-        } else {
             return require('../assets/images/buttons/start_button_inactive.png');
+        } else {
+            return require('../assets/images/buttons/start_button_active.png');
         }
     };
 
@@ -72,13 +72,13 @@ const StartButton: React.FC<StartButtonProps> = ({ onPress, isRunning }) => {
 
 const styles = StyleSheet.create({
     buttonContainer: {
-        flexDirection: 'row',
+        // flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'center',
+        // justifyContent: 'center',
     },
     buttonImage: {
-        width: 200,
-        height: 200,
+        width: 128,
+        height: 128,
     },
 });
 

@@ -66,8 +66,8 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
 
     return (
         <View style={styles.container}>
-            <View style={styles.timerCircleContainer}>
-                <ImageBackground source={image} resizeMode="cover" style={styles.image}>
+            <ImageBackground source={image} resizeMode="cover" style={styles.imagaContainer}>
+                <View style={styles.timerCircleContainer}>
                     <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
                         <Circle
                             cx={size / 2}
@@ -87,8 +87,8 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
                     <View style={styles.textContainer}>
                         <Text style={GlobalStyles.timerText}>{formatTime(currentTime!)}</Text>
                     </View>
-                </ImageBackground>
-            </View>
+                </View>
+            </ImageBackground>
 
             <View style={styles.startButtonContainer}>
                 {/* StartButton to control the timer */}
@@ -101,30 +101,42 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'transparent',
+        // backgroundColor: 'blue',
+    },
+    imagaContainer: {
+        // flex: 1,
+        alignItems: 'center',
+        // position: 'relative',
+        justifyContent: 'center',
+        alignContent: 'center',
+        // backgroundColor: 'purple',
+        // padding: 20,
+        width: 400,
+        height: 400,
     },
     timerCircleContainer: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
         // backgroundColor: 'pink',
+        position: 'absolute',
     },
     textContainer: {
         position: 'absolute',
-        justifyContent: 'center',
+        // justifyContent: 'center',
         alignItems: 'center',
-        width: '100%',
-        // height: '100%',
+        transform: [{ translateY: -10 }],
     },
     startButtonContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    image: {
-        flex: 1,
-        justifyContent: 'center',
+        marginTop: 100,
+        // marginBottom: 2,
+        marginVertical: 20,
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // backgroundColor: 'yellow',
     },
 });
 

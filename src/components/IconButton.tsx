@@ -82,9 +82,9 @@ const styles = StyleSheet.create({
     },
 
     buttonContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+        // flexDirection: 'row',
+        // alignItems: 'center',
+        // justifyContent: 'center',
     },
     buttonImage: {
         // width and height are now set dynamically in the component

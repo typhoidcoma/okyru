@@ -43,7 +43,7 @@ export const GlobalStyles = StyleSheet.create({
     },
     timerText: {
         fontFamily: 'Nirmala',
-        fontSize: 32,
+        fontSize: 64,
         color: Colors.text,
     },
     headerText: {
