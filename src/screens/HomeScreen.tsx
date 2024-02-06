@@ -1,36 +1,37 @@
-import { View, Text, StyleSheet } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Button } from 'react-native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import CustomLinearGradient from '../components/CustomLinearGradient';
 import IconButton from '../components/IconButton';
-import CircularTimer from '../components/CircularTimer'; // Import the CircularTimer component
+import CircularTimer from '../components/CircularTimer';
 import { GlobalStyles } from '../styles/GlobalStyles';
-import React from 'react';
 
-const HomeScreen = () => {
+type HomeScreenProps = {
+    navigation: StackNavigationProp<any>; // Use the correct type for navigation
+};
+
+const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     return (
         <CustomLinearGradient style={styles.gradient}>
             <View style={styles.container}>
-                {/* Circular Timer */}
                 <CircularTimer
                     size={220}
                     strokeWidth={8}
-                    time={1200} // Duration of the countdown in seconds (20 seconds)
+                    time={1200}
                     color="rgba(234,0,8,.65)"
                     onTimerDone={() => console.log('Timer done!')}
                 />
 
-                {/* Rest of your UI components */}
-                {/* Start Button */}
-                {/* <StartButton onPress={handleRestartPress} isRunning={isTimerRunning} /> */}
+                {/* Add a button to navigate to SettingsScreen */}
+                {/* <Button title="Go to Settings" onPress={() => navigation.navigate('Settings')} /> */}
 
-                {/* Other UI Components */}
+                {/* Rest of your UI components */}
                 <IconButton
                     svgIconName="26_Menu"
                     width={80}
                     height={80}
-                    onPress={() => console.log('Button pressed')}
+                    onPress={() => navigation.navigate('Settings')}
                 />
-
-                {/* <Icon iconName="26_Menu" size={32} color="red" /> */}
                 <Text style={[GlobalStyles.text, styles.appName]}>okyru</Text>
             </View>
         </CustomLinearGradient>
@@ -39,21 +40,17 @@ const HomeScreen = () => {
 
 const styles = StyleSheet.create({
     gradient: {
-        flex: 1, // Ensure gradient fills the screen
+        flex: 1,
     },
     container: {
-        flex: 1, // Ensure container takes up the whole gradient space
-        justifyContent: 'center', // Center the content
-        alignItems: 'center', // Center the content
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     appName: {
-        marginVertical: 10, // Add vertical space around the app name
-        alignSelf: 'auto', // Center the app name
+        marginVertical: 10,
+        alignSelf: 'auto',
     },
-    buttonStyle: {
-        alignSelf: 'center',
-    },
-    // Add any other styles you need
 });
 
 export default HomeScreen;

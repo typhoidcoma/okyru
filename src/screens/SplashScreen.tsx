@@ -2,22 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Animated, Image } from 'react-native';
 import { GlobalStyles } from '../styles/GlobalStyles';
 import CustomLinearGradient from '../components/CustomLinearGradient';
-// import Icon from './Icon';
-
-// type SplashScreenStackParamList = {
-//   Home: undefined; // No parameters expected for the Home screen
-//   // ... other screens in the stack
-// };
-
-// type SplashScreenNavigationProp = StackNavigationProp<SplashScreenStackParamList, 'Home'>;
-
-// type SplashScreenRouteProp = RouteProp<SplashScreenStackParamList, 'Home'>;
-
-// interface SplashScreenProps {
-//   navigation: SplashScreenNavigationProp;
-//   route: SplashScreenRouteProp;
-//   // ... other props specific to this screen
-// }
 
 const SplashScreen: React.FC<any> = ({ navigation }) => {
     const [fadeAnim] = useState(new Animated.Value(1)); // Initial value for opacity: 1
