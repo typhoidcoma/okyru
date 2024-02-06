@@ -64,3 +64,6 @@ yarn-error.log
 
 # testing
 /coverage
+hs_err_pid15604.log
+android/app/release/app-release.apk
+android/app/release/output-metadata.json
