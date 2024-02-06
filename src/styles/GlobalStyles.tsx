@@ -65,7 +65,8 @@ export const GlobalStyles = StyleSheet.create({
     imageLogo: {
         width: 250,
         height: 250,
-        position: 'absolute',
+        position: 'relative',
+        bottom: 100,
     },
     // ... add more global styles as needed
 });

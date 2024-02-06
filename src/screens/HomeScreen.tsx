@@ -11,7 +11,7 @@ const HomeScreen = () => {
             <View style={styles.container}>
                 {/* Circular Timer */}
                 <CircularTimer
-                    size={252}
+                    size={220}
                     strokeWidth={8}
                     time={1200} // Duration of the countdown in seconds (20 seconds)
                     color="rgba(234,0,8,.65)"
