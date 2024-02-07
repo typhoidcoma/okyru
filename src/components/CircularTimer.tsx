@@ -47,7 +47,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
                         if (onTimerDone) {
                             onTimerDone();
                             // Vibrate the device when the timer is done
-                            Vibration.vibrate(200);
+                            Vibration.vibrate([200, 1000, 200, 1000]);
                         }
                         return prevTime;
                     }

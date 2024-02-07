@@ -17,7 +17,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <CircularTimer
                     size={220}
                     strokeWidth={8}
-                    time={1200}
+                    time={10}
                     color="rgba(234,0,8,.65)"
                     onTimerDone={() => null}
                 />
