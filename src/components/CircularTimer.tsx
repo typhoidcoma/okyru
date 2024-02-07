@@ -11,6 +11,7 @@ interface CircularTimerProps {
     time: number; // Input time in seconds
     color: string;
     onTimerDone: () => void;
+    onReset: () => void;
 }
 
 interface CircularTimerRef {
@@ -18,7 +19,7 @@ interface CircularTimerRef {
 }
 
 const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTimerProps> = (
-    { size, strokeWidth, time, color, onTimerDone },
+    { size, strokeWidth, time, color, onTimerDone, onReset },
     ref
 ) => {
     const [currentTime, setCurrentTime] = useState<number | null>(null);
@@ -26,6 +27,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
 
     // Function to reset the timer to its initial time
     const resetTimer = () => {
+        onReset(); // Call the onReset function to reset the modalOpened state
         animatedValue.current = time;
         setCurrentTime(time); // Update the currentTime state to the initial time
     };
