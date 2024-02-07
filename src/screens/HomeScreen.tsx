@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { GlobalStyles } from '../styles/GlobalStyles'; // Importing GlobalStyles for consistent styling
 import { StackNavigationProp } from '@react-navigation/stack'; // Importing StackNavigationProp for navigation
+import { View, Text, StyleSheet } from 'react-native';
+import CircularTimer from '../components/CircularTimer'; // Importing CircularTimer component
 import CustomLinearGradient from '../components/CustomLinearGradient'; // Importing CustomLinearGradient component
 import IconButton from '../components/IconButton'; // Importing IconButton component
-import CircularTimer from '../components/CircularTimer'; // Importing CircularTimer component
-import { GlobalStyles } from '../styles/GlobalStyles'; // Importing GlobalStyles for consistent styling
 import ModalScreen from '../screens/ModalScreen'; // Importing ModalScreen component
+import React, { useState } from 'react';
 
 type HomeScreenProps = {
     navigation: StackNavigationProp<any>; // Define the type for navigation prop
