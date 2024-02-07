@@ -10,18 +10,18 @@ const Stack = createNativeStackNavigator();
 
 // Define your navigation structure
 const AppNavigator = () => {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Splash">
-        <Stack.Screen
-          name="Splash"
-          component={SplashScreen} // Include your SplashScreen component here
-          options={{ headerShown: false }}
-        />
-        {/* Add other screens as needed */}
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            <Stack.Navigator initialRouteName="Splash">
+                <Stack.Screen
+                    name="Splash"
+                    component={SplashScreen} // Include your SplashScreen component here
+                    options={{ headerShown: false }}
+                />
+                {/* Add other screens as needed */}
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
 };
 
 export default AppNavigator;
