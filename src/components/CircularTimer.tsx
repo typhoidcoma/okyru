@@ -1,17 +1,43 @@
-import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+/**
+ * CircularTimer Component.
+ *
+ * This component displays a circular timer with customizable attributes such as size, stroke width, color, and time duration.
+ *
+ * @file CircularTimer.tsx
+ * @component
+ * @param {object} props - Props for the CircularTimer component
+ * @param {number} props.size - Size of the circular timer
+ * @param {number} props.strokeWidth - Width of the stroke used in the circular timer
+ * @param {number} props.time - Duration of the timer in seconds
+ * @param {string} props.color - Color of the circular timer
+ * @param {() => void} props.onReset - Callback function to reset the timer
+ * @param {() => void} props.onTimerDone - Callback function triggered when the timer is done
+ * @returns {JSX.Element} A JSX element representing the CircularTimer component
+ * @example
+ * <CircularTimer
+ *    size={220}
+ *    strokeWidth={8}
+ *    time={60}
+ *    color="rgba(234,0,8,.65)"
+ *    onReset={handleReset}
+ *    onTimerDone={handleTimerDone}
+ * />
+ */
+
 import { View, Text, StyleSheet, ImageBackground, Vibration } from 'react-native';
-import Svg, { Circle } from 'react-native-svg';
-import GlobalStyles from '../styles/GlobalStyles';
 import BackgroundTimer from 'react-native-background-timer';
+import GlobalStyles from '../styles/GlobalStyles';
+import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
 import StartButton from './StartButton';
+import Svg, { Circle } from 'react-native-svg';
 
 interface CircularTimerProps {
+    color: string;
+    onReset: () => void;
+    onTimerDone: () => void;
     size: number;
     strokeWidth: number;
     time: number; // Input time in seconds
-    color: string;
-    onTimerDone: () => void;
-    onReset: () => void;
 }
 
 interface CircularTimerRef {
@@ -120,26 +146,26 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
 
 const styles = StyleSheet.create({
     container: {
+        alignItems: 'center',
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
     },
     imagaContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
         alignContent: 'center',
-        width: 360,
+        alignItems: 'center',
         height: 360,
+        justifyContent: 'center',
+        width: 360,
     },
     timerCircleContainer: {
+        alignItems: 'center',
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
         position: 'absolute',
     },
     textContainer: {
-        position: 'absolute',
         alignItems: 'center',
+        position: 'absolute',
         transform: [{ translateY: -10 }],
     },
     startButtonContainer: {

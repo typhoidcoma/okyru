@@ -1,3 +1,17 @@
+/**
+ * SplashScreen Component.
+ *
+ * This component displays a splash screen with the app's logo fading out using animation.
+ *
+ * @file SplashScreen.tsx
+ * @component
+ * @param {object} props - Props for the SplashScreen component
+ * @param {object} props.navigation - Navigation object for navigating between screens
+ * @returns {JSX.Element} A JSX element representing the SplashScreen component
+ * @example
+ * <SplashScreen navigation={navigation} />
+ */
+
 import React, { useEffect, useState } from 'react';
 import { Animated, Image } from 'react-native';
 import { GlobalStyles } from '../styles/GlobalStyles';
