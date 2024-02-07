@@ -3,7 +3,7 @@
 
 Okyru is a mobile application designed to help you maintain a healthy lifestyle while working at your desk. It reminds you to take short breaks at regular intervals and provides simple exercises to perform. Stay active and reduce the negative effects of prolonged sitting with Okyru.
 
-![Okyru App](./src/assets/logos/logo.png)
+![Okyru App](./src/assets/logos/okyru_logo_flat-1.png)
 
 ## Features
 
