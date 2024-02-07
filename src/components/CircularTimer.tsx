@@ -27,7 +27,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     // Function to reset the timer to its initial time
     const resetTimer = () => {
         animatedValue.current = time;
-        setCurrentTime(time);
+        setCurrentTime(time); // Update the currentTime state to the initial time
     };
 
     // Expose the resetTimer function through the ref
@@ -43,14 +43,14 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
                 setCurrentTime((prevTime) => {
                     if (prevTime! > 0) {
                         return prevTime! - 1;
-                    } else {
-                        if (onTimerDone) {
-                            onTimerDone();
-                            // Vibrate the device when the timer is done
-                            Vibration.vibrate([200, 1000, 200, 1000]);
-                        }
-                        return prevTime;
+                    } else if (prevTime === 0 && onTimerDone) {
+                        // Clear the interval to stop further execution
+                        onTimerDone();
+                        // Vibrate the device when the timer is done
+                        Vibration.vibrate([200, 1000, 200, 1000]);
+                        stopBackgroundTimer();
                     }
+                    return prevTime;
                 });
             }, 1000);
         };
@@ -67,7 +67,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
         return () => {
             stopBackgroundTimer();
         };
-    }, [onTimerDone]);
+    }, [onTimerDone, currentTime]); // Trigger the effect whenever onTimerDone or currentTime changes
 
     const circumference = 2 * Math.PI * (size / 2 - strokeWidth / 2);
     const strokeDashoffset = (currentTime! / time) * circumference;

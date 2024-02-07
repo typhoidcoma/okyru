@@ -19,7 +19,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                     strokeWidth={8}
                     time={10}
                     color="rgba(234,0,8,.65)"
-                    onTimerDone={() => null}
+                    onTimerDone={() => console.log('Timer done!')}
                 />
 
                 {/* Rest of your UI components */}
