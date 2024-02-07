@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import CustomLinearGradient from '../components/CustomLinearGradient';
 import IconButton from '../components/IconButton';
@@ -19,11 +19,8 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                     strokeWidth={8}
                     time={1200}
                     color="rgba(234,0,8,.65)"
-                    onTimerDone={() => console.log('Timer done!')}
+                    onTimerDone={() => null}
                 />
-
-                {/* Add a button to navigate to SettingsScreen */}
-                {/* <Button title="Go to Settings" onPress={() => navigation.navigate('Settings')} /> */}
 
                 {/* Rest of your UI components */}
                 <IconButton

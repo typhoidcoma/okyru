@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
-import { View, Text, StyleSheet, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, Vibration } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import GlobalStyles from '../styles/GlobalStyles';
 import BackgroundTimer from 'react-native-background-timer';
@@ -46,6 +46,8 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
                     } else {
                         if (onTimerDone) {
                             onTimerDone();
+                            // Vibrate the device when the timer is done
+                            Vibration.vibrate(200);
                         }
                         return prevTime;
                     }
@@ -139,6 +141,7 @@ const styles = StyleSheet.create({
         transform: [{ translateY: -10 }],
     },
     startButtonContainer: {
+        // position: 'absolute',
         marginTop: 100,
         marginVertical: 20,
     },
