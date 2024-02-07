@@ -15,11 +15,11 @@ const iconNamesFileContent = `// IconNames.ts\nexport type IconName = ${iconName
 
 // Generate content for IconMapping.tsx
 const iconMappingContent = svgFiles
-  .map((file) => {
-    const iconName = path.basename(file, '.svg');
-    return `  '${iconName}': require('../assets/icons/${file}').default,`;
-  })
-  .join('\n');
+    .map((file) => {
+        const iconName = path.basename(file, '.svg');
+        return `  '${iconName}': require('../assets/icons/${file}').default,`;
+    })
+    .join('\n');
 
 const iconMappingFileContent = `// IconMapping.tsx\nimport { IconName } from './IconNames';\n\nconst IconMapping: Record<IconName, React.FC<React.SVGProps<SVGSVGElement>>> = {\n${iconMappingContent}\n};\n\nexport default IconMapping;\n`;
 
