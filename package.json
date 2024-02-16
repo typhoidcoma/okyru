@@ -29,7 +29,6 @@
     "react-native-svg": "^14.1.0",
     "react-native-svg-uri": "^0.0.1",
     "react-navigation": "^4.4.4",
-    "rive-react-native": "^6.2.3",
     "xmldom": "^0.6.0"
   },
   "devDependencies": {
