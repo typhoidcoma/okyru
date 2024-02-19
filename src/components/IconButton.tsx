@@ -39,7 +39,7 @@ const IconButton: React.FC<IconButtonProps> = ({ onPress, width, height, svgIcon
             }, 100)
         );
     };
-    let iconColor = '#EA0008';
+    let iconColor = '#FFFFFF';
     const getButtonImage = (): ImageSourcePropType => {
         switch (buttonState) {
             case 'hover':

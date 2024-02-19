@@ -1,6 +1,6 @@
 import { GlobalStyles } from '../styles/GlobalStyles'; // Importing GlobalStyles for consistent styling
 import { StackNavigationProp } from '@react-navigation/stack'; // Importing StackNavigationProp for navigation
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
 import CircularTimer from '../components/CircularTimer'; // Importing CircularTimer component
 import CustomLinearGradient from '../components/CustomLinearGradient'; // Importing CustomLinearGradient component
 import IconButton from '../components/IconButton'; // Importing IconButton component
@@ -45,10 +45,10 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
             <View style={styles.container}>
                 {/* Circular timer component */}
                 <CircularTimer
-                    size={220}
-                    strokeWidth={8}
+                    size={270}
+                    strokeWidth={6}
                     time={30}
-                    color="rgba(234,0,8,.65)"
+                    color="#ffffff"
                     // Pass the function to handle timer done event
                     onTimerDone={handleTimerDone}
                     // Pass the function to reset modal state
@@ -61,11 +61,13 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                     svgIconName="26_Menu"
                     width={80}
                     height={80}
+                    
                     // Navigate to Settings screen on press
                     onPress={() => navigation.navigate('Settings')}
                 />
                 {/* Text component */}
-                <Text style={[GlobalStyles.text, styles.appName]}>okyru</Text>
+                {/* <Text style={[GlobalStyles.text, styles.appName]}>okyru</Text> */}
+                <Image style={[ styles.appName]} source={require('../assets/logos/okyru_logo_text.png')} />    
             </View>
             {/* ModalScreen component, conditionally rendered based on modalVisible state */}
             {modalVisible && <ModalScreen onClose={closeModal} />}
@@ -84,8 +86,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     appName: {
-        marginVertical: 10,
+        marginVertical: 24,
         alignSelf: 'auto',
+        width: 48,
+        height: 18.65,
     },
 });
 

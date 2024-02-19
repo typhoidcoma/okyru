@@ -1,19 +1,18 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import Rive, { Fit, Alignment } from 'rive-react-native';
 
 const OkyruLogo = () => {
     return (
-        <View style={styles.container}>
-            <Rive
-                resourceName={'okyru_logo_anim'} // Make sure this points to the correct Rive animation
-                fit={Fit.Fill}
-                alignment={Alignment.Center}
-                autoplay={true}
-                // artboardName="Logo" // Uncomment this line if you have an artboard specified
-                style={styles.logo}
-            />
-        </View>
+        // <View style={styles.container}>
+        //     <Rive
+        //         resourceName={'okyru_logo_anim'} // Make sure this points to the correct Rive animation
+        //         fit={Fit.Fill}
+        //         alignment={Alignment.Center}
+        //         autoplay={true}
+        //         // artboardName="Logo" // Uncomment this line if you have an artboard specified
+        //         style={styles.logo}
+        //     />
+        // </View>
     );
 };
 

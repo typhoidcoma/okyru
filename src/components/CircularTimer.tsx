@@ -108,7 +108,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
         return `${minutes}:${remainingSeconds}`;
     };
 
-    const image = require('../assets/images/backgrounds/timerBG_light.png');
+    const image = require('../assets/images/backgrounds/timerBG_red.png');
 
     return (
         <View style={styles.container}>
@@ -153,9 +153,9 @@ const styles = StyleSheet.create({
     imagaContainer: {
         alignContent: 'center',
         alignItems: 'center',
-        height: 360,
+        width: 480,
+        height: 480,
         justifyContent: 'center',
-        width: 360,
     },
     timerCircleContainer: {
         alignItems: 'center',
@@ -165,13 +165,14 @@ const styles = StyleSheet.create({
     },
     textContainer: {
         alignItems: 'center',
+        width: '100%',
         position: 'absolute',
         transform: [{ translateY: -10 }],
     },
     startButtonContainer: {
         // position: 'absolute',
-        marginTop: 100,
-        marginVertical: 20,
+        // marginTop: 32,
+        marginVertical: 12,
     },
 });
 
