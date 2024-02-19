@@ -47,7 +47,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <CircularTimer
                     size={220}
                     strokeWidth={8}
-                    time={500}
+                    time={30}
                     color="rgba(234,0,8,.65)"
                     // Pass the function to handle timer done event
                     onTimerDone={handleTimerDone}

@@ -48,11 +48,11 @@ const StartButton: React.FC<StartButtonProps> = ({ onPress, isRunning }) => {
 
     const getButtonImage = (): ImageSourcePropType => {
         if (buttonState === 'hover') {
-            return require('../assets/images/buttons/start_button_hover.png');
+            return require('../assets/images/buttons/start_button_red_active.png');
         } else if (buttonState === 'press') {
-            return require('../assets/images/buttons/start_button_inactive.png');
+            return require('../assets/images/buttons/start_button_red_inactive.png');
         } else {
-            return require('../assets/images/buttons/start_button_active.png');
+            return require('../assets/images/buttons/start_button_red_active.png');
         }
     };
 
