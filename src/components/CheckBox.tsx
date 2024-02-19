@@ -10,6 +10,7 @@
  *
  * @returns {React.ReactElement} The rendered Checkbox component.
  */
+
 import React, { useState } from 'react';
 import { TouchableOpacity, Image, StyleProp, ViewStyle } from 'react-native';
 
