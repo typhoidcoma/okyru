@@ -10,27 +10,32 @@
  *
  * @returns {React.ReactElement} The rendered Checkbox component.
  */
-
 import React, { useState } from 'react';
-import { TouchableOpacity, Image, StyleProp, ViewStyle } from 'react-native';
+import { TouchableOpacity, Image, StyleProp, ViewStyle, ImageStyle } from 'react-native';
 
 interface CheckboxProps {
     checked: boolean;
     onChange: (isChecked: boolean) => void;
     containerStyle?: StyleProp<ViewStyle>;
+    size?: number;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ checked, onChange, containerStyle }) => {
-    const checkedImage = require('./checked.png');
-    const uncheckedImage = require('./unchecked.png');
+const Checkbox: React.FC<CheckboxProps> = ({ checked, onChange, containerStyle, size = 24 }) => {
+    const checkedImage = require('../assets/images/buttons/checkbox_button_checked.png');
+    const uncheckedImage = require('../assets/images/buttons/checkbox_button_unchecked.png');
 
     const toggleCheckbox = () => {
         onChange(!checked);
     };
 
+    const imageSize: StyleProp<ImageStyle> = {
+        width: size,
+        height: size,
+    };
+
     return (
-        <TouchableOpacity onPress={toggleCheckbox} style={containerStyle}>
-            <Image source={checked ? checkedImage : uncheckedImage} />
+        <TouchableOpacity onPress={toggleCheckbox} style={[containerStyle, imageSize]}>
+            <Image source={checked ? checkedImage : uncheckedImage} style={imageSize} />
         </TouchableOpacity>
     );
 };
