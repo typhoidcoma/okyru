@@ -1,6 +1,5 @@
-import { GlobalStyles } from '../styles/GlobalStyles'; // Importing GlobalStyles for consistent styling
 import { StackNavigationProp } from '@react-navigation/stack'; // Importing StackNavigationProp for navigation
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import CircularTimer from '../components/CircularTimer'; // Importing CircularTimer component
 import CustomLinearGradient from '../components/CustomLinearGradient'; // Importing CustomLinearGradient component
 import IconButton from '../components/IconButton'; // Importing IconButton component
@@ -61,13 +60,12 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                     svgIconName="26_Menu"
                     width={80}
                     height={80}
-                    
                     // Navigate to Settings screen on press
                     onPress={() => navigation.navigate('Settings')}
                 />
                 {/* Text component */}
                 {/* <Text style={[GlobalStyles.text, styles.appName]}>okyru</Text> */}
-                <Image style={[ styles.appName]} source={require('../assets/logos/okyru_logo_text.png')} />    
+                {/* <Image style={[ styles.appName]} source={require('../assets/logos/okyru_logo_text.png')} /> */}
             </View>
             {/* ModalScreen component, conditionally rendered based on modalVisible state */}
             {modalVisible && <ModalScreen onClose={closeModal} />}

@@ -13,9 +13,10 @@
  */
 
 import React, { useEffect, useState } from 'react';
-import { Animated, Image } from 'react-native';
+import { Animated } from 'react-native';
 import { GlobalStyles } from '../styles/GlobalStyles';
 import CustomLinearGradient from '../components/CustomLinearGradient';
+import Rive from 'rive-react-native';
 
 const SplashScreen: React.FC<any> = ({ navigation }) => {
     const [fadeAnim] = useState(new Animated.Value(1)); // Initial value for opacity: 1
@@ -37,9 +38,14 @@ const SplashScreen: React.FC<any> = ({ navigation }) => {
     return (
         <CustomLinearGradient>
             <Animated.View style={{ ...GlobalStyles.container, opacity: fadeAnim }}>
-                <Image
+                {/* <Image
                     source={require('../assets/logos/logo.png')}
                     style={GlobalStyles.imageLogo}
+                /> */}
+                <Rive
+                    autoplay={true}
+                    animationName="okyru_logo_anim"
+                    resourceName={'okyru_logo_anim'}
                 />
             </Animated.View>
         </CustomLinearGradient>
