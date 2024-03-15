@@ -13,10 +13,10 @@ const CustomLinearGradient: React.FC<CustomLinearGradientProps> = ({ children, s
     return (
         <LinearGradient
             // colors={['#EBF3FA', '#DDE7F3', '#E5F0F9']} // Default gradient colors
-            colors={['#C80006', '#EA0008', '#C80006']} // Default gradient colors
+            colors={['#212733', '#080B15']} // Default gradient colors
             style={[styles.container, style]} // Allow custom styles to be passed
-            start={{ x: 0, y: 0.5 }}
-            end={{ x: 1, y: 0.5 }}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
         >
             {children}
         </LinearGradient>

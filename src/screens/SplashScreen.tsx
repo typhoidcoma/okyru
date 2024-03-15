@@ -16,7 +16,7 @@ import React, { useEffect, useState } from 'react';
 import { Animated } from 'react-native';
 import { GlobalStyles } from '../styles/GlobalStyles';
 import CustomLinearGradient from '../components/CustomLinearGradient';
-import Rive from 'rive-react-native';
+import OkyruLogo from '../components/OkyruLogo';
 
 const SplashScreen: React.FC<any> = ({ navigation }) => {
     const [fadeAnim] = useState(new Animated.Value(1)); // Initial value for opacity: 1
@@ -29,7 +29,7 @@ const SplashScreen: React.FC<any> = ({ navigation }) => {
                 duration: 1000,
                 useNativeDriver: true, // Add useNativeDriver for better performance
             }).start(() => navigation.replace('Home')); // Navigate to 'Home' after animation ends
-        }, 3000); // Start the animation after 3 seconds
+        }, 5000); // Start the animation after 3 seconds
 
         // Clear timeout if the component is unmounted
         return () => clearTimeout(timer);
@@ -38,15 +38,7 @@ const SplashScreen: React.FC<any> = ({ navigation }) => {
     return (
         <CustomLinearGradient>
             <Animated.View style={{ ...GlobalStyles.container, opacity: fadeAnim }}>
-                {/* <Image
-                    source={require('../assets/logos/logo.png')}
-                    style={GlobalStyles.imageLogo}
-                /> */}
-                <Rive
-                    autoplay={true}
-                    animationName="okyru_logo_anim"
-                    resourceName={'okyru_logo_anim'}
-                />
+                <OkyruLogo />
             </Animated.View>
         </CustomLinearGradient>
     );
