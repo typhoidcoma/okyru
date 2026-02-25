@@ -1,82 +1,89 @@
+# Okyru
 
-# Okyru - Desk Exercise Reminder App
-
-Okyru is a mobile application designed to help you maintain a healthy lifestyle while working at your desk. It reminds you to take short breaks at regular intervals and provides simple exercises to perform. Stay active and reduce the negative effects of prolonged sitting with Okyru.
+Okyru is a React Native desk-break timer app with a custom animated splash, circular countdown timer, and settings screen for break interval configuration.
 
 ![Okyru App](./src/assets/logos/logo.png)
 
-## Features
+## Current Features
 
-- **Desk Exercise Reminders**: Okyru sends you notifications to remind you to take short breaks and perform exercises.
-- **Exercise Instructions**: Each exercise comes with clear instructions on how to perform it correctly.
-- **Customizable Schedule**: You can customize the frequency and duration of exercise breaks based on your preferences.
-- **Progress Tracking**: Track your exercise history and see your progress over time.
+- Splash screen with Rive animation.
+- Main countdown timer screen with custom circular progress UI.
+- Settings screen to change timer interval (saved in AsyncStorage).
+- SVG icon system and themed gradient background.
 
-## Getting Started
+## Tech Stack
 
-Follow the steps below to set up and run the Okyru app on your device.
+- React Native `0.73.x`
+- React `18`
+- TypeScript
+- React Navigation (native stack)
+- Jest + ESLint
 
-### Prerequisites
+## Prerequisites
 
-Make sure you have the following software installed on your computer:
+- Node.js `>=18`
+- npm
+- React Native Android/iOS environment set up:
+  https://reactnative.dev/docs/environment-setup
 
-- [Node.js](https://nodejs.org/)
-- [npm](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/)
-- [React Native CLI](https://reactnative.dev/docs/environment-setup)
+### Android JDK requirement
 
-### Installation
+For this repo/toolchain, Android builds are expected to run with JDK 17.
 
-1. Clone the Okyru repository to your local machine:
+PowerShell example:
 
-   ```bash
-   git clone https://github.com/typhoidcoma/okyru.git
-   cd okyru
-   ```
+```powershell
+$env:JAVA_HOME='C:\Program Files\Eclipse Adoptium\jdk-17.0.2.8-hotspot'
+$env:Path="$env:JAVA_HOME\bin;$env:Path"
+```
 
-2. Install the project dependencies:
+## Setup
 
-   ```bash
-   npm install
-   # OR
-   yarn install
-   ```
+```bash
+npm install
+```
 
-3. Start the Metro server:
+## Run
 
-   ```bash
-   npm start
-   # OR
-   yarn start
-   ```
+Start Metro:
 
-4. Open a new terminal and run the app on your desired platform (iOS or Android):
+```bash
+npm start
+```
 
-   #### For Android
+Run Android:
 
-   ```bash
-   npm run android
-   # OR
-   yarn android
-   ```
+```bash
+npm run android
+```
 
-   #### For iOS
+Run iOS:
 
-   ```bash
-   npm run ios
-   # OR
-   yarn ios
-   ```
+```bash
+npm run ios
+```
 
-### Usage
+## Quality Checks
 
-1. Launch the Okyru app on your device.
-2. Set your exercise schedule preferences.
-3. Receive exercise reminders and follow the instructions to stay active during your workday.
+Lint:
 
-## Contributing
+```bash
+npm run lint
+```
 
-We welcome contributions to improve Okyru. Feel free to open issues, submit pull requests, or provide feedback.
+Tests:
 
-## License
+```bash
+npm test -- --watchAll=false
+```
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Type check:
+
+```bash
+npx tsc --noEmit
+```
+
+## Notes
+
+- Release signing secrets must not be committed. Inject signing values from local machine or CI secrets.
+- Some legacy/placeholder UI still exists and is being modernized incrementally.
