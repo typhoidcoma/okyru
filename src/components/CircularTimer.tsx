@@ -27,7 +27,14 @@
 import { View, Text, StyleSheet, ImageBackground, Vibration } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
 import GlobalStyles from '../styles/GlobalStyles';
-import React, { useState, useEffect, useRef, forwardRef, useImperativeHandle } from 'react';
+import React, {
+    useState,
+    useEffect,
+    useRef,
+    forwardRef,
+    useImperativeHandle,
+    useCallback,
+} from 'react';
 import StartButton from './StartButton';
 import Svg, { Circle } from 'react-native-svg';
 
@@ -48,14 +55,42 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     { size, strokeWidth, time, color, onTimerDone, onReset },
     ref
 ) => {
-    const [currentTime, setCurrentTime] = useState<number | null>(null);
-    const animatedValue = useRef<number>(time);
+    const [currentTime, setCurrentTime] = useState<number>(time);
+    const [isRunning, setIsRunning] = useState<boolean>(true);
+    const intervalRef = useRef<number | null>(null);
+
+    const stopTimer = useCallback(() => {
+        if (intervalRef.current !== null) {
+            BackgroundTimer.clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    }, []);
+
+    const startTimer = useCallback(
+        (initialTime: number) => {
+            stopTimer();
+            setCurrentTime(initialTime);
+            setIsRunning(true);
+            intervalRef.current = BackgroundTimer.setInterval(() => {
+                setCurrentTime((prevTime) => {
+                    if (prevTime <= 1) {
+                        stopTimer();
+                        setIsRunning(false);
+                        onTimerDone();
+                        Vibration.vibrate([200, 1000, 200, 1000]);
+                        return 0;
+                    }
+                    return prevTime - 1;
+                });
+            }, 1000);
+        },
+        [onTimerDone, stopTimer]
+    );
 
     // Function to reset the timer to its initial time
     const resetTimer = () => {
         onReset(); // Call the onReset function to reset the modalOpened state
-        animatedValue.current = time;
-        setCurrentTime(time); // Update the currentTime state to the initial time
+        startTimer(time);
     };
 
     // Expose the resetTimer function through the ref
@@ -64,41 +99,15 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     }));
 
     useEffect(() => {
-        let timer: number | null = null;
-
-        const startBackgroundTimer = () => {
-            timer = BackgroundTimer.setInterval(() => {
-                setCurrentTime((prevTime) => {
-                    if (prevTime! > 0) {
-                        return prevTime! - 1;
-                    } else if (prevTime === 0 && onTimerDone) {
-                        // Clear the interval to stop further execution
-                        onTimerDone();
-                        // Vibrate the device when the timer is done
-                        Vibration.vibrate([200, 1000, 200, 1000]);
-                        stopBackgroundTimer();
-                    }
-                    return prevTime;
-                });
-            }, 1000);
-        };
-
-        const stopBackgroundTimer = () => {
-            if (timer !== null) {
-                BackgroundTimer.clearInterval(timer);
-                timer = null;
-            }
-        };
-
-        startBackgroundTimer();
+        startTimer(time);
 
         return () => {
-            stopBackgroundTimer();
+            stopTimer();
         };
-    }, [onTimerDone, currentTime]); // Trigger the effect whenever onTimerDone or currentTime changes
+    }, [startTimer, stopTimer, time]);
 
     const circumference = 2 * Math.PI * (size / 2 - strokeWidth / 2);
-    const strokeDashoffset = (currentTime! / time) * circumference;
+    const strokeDashoffset = (currentTime / Math.max(time, 1)) * circumference;
 
     const formatTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60)
@@ -131,14 +140,14 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
                     </Svg>
                     {/* Text in the middle of the circle */}
                     <View style={styles.textContainer}>
-                        <Text style={GlobalStyles.timerText}>{formatTime(currentTime!)}</Text>
+                        <Text style={GlobalStyles.timerText}>{formatTime(currentTime)}</Text>
                     </View>
                 </View>
             </ImageBackground>
 
             <View style={styles.startButtonContainer}>
                 {/* StartButton to control the timer */}
-                <StartButton onPress={resetTimer} isRunning={currentTime! > 0} />
+                <StartButton onPress={resetTimer} isRunning={isRunning} />
             </View>
         </View>
     );

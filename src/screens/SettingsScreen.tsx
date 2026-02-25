@@ -4,12 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Slider from '@react-native-community/slider'; // Import Slider
 import Checkbox from '../components/CheckBox';
 import CustomLinearGradient from '../components/CustomLinearGradient';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/types';
 
 interface SettingsScreenProps {
-    navigation: any; // Use the correct type for navigation
+    navigation: NativeStackNavigationProp<RootStackParamList, 'Settings'>;
 }
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     const [time, setTime] = useState(1200); // Default time in seconds
+    const [enabled, setEnabled] = useState(true);
 
     // Load the saved time when the component mounts
     useEffect(() => {
@@ -22,6 +25,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
             if (savedSettings) {
                 const { time: savedTime } = JSON.parse(savedSettings); // Rename to savedTime
                 setTime(savedTime); // Set the savedTime in the state
+                setEnabled(savedTime > 0);
             }
         } catch (error) {
             console.error('Error loading settings:', error);
@@ -48,38 +52,25 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                     maximumValue={3600} // Adjust the maximum time as needed
                     step={1}
                     value={time}
-                    onValueChange={(value) => setTime(value)}
+                    onValueChange={(value) => {
+                        setEnabled(true);
+                        setTime(value);
+                    }}
                 />
                 <Checkbox
-                    checked={time === 0}
-                    onChange={(isChecked) => setTime(isChecked ? 0 : 1200)}
-                    size={48}   // Add a size prop to the Checkbox component
+                    checked={!enabled}
+                    onChange={(isChecked) => {
+                        const isDisabled = isChecked;
+                        setEnabled(!isDisabled);
+                        if (isDisabled) {
+                            setTime(0);
+                        } else if (time === 0) {
+                            setTime(1200);
+                        }
+                    }}
+                    size={48}
                 />
-                <Checkbox
-                    checked={time === 0}
-                    onChange={(isChecked) => setTime(isChecked ? 0 : 1200)}
-                    size={48}   // Add a size prop to the Checkbox component
-                />
-                <Checkbox
-                    checked={time === 0}
-                    onChange={(isChecked) => setTime(isChecked ? 0 : 1200)}
-                    size={48}   // Add a size prop to the Checkbox component
-                />
-                <Checkbox
-                    checked={time === 0}
-                    onChange={(isChecked) => setTime(isChecked ? 0 : 1200)}
-                    size={48}   // Add a size prop to the Checkbox component
-                />
-                <Checkbox
-                    checked={time === 0}
-                    onChange={(isChecked) => setTime(isChecked ? 0 : 1200)}
-                    size={48}   // Add a size prop to the Checkbox component
-                />
-                <Checkbox
-                    checked={time === 0}
-                    onChange={(isChecked) => setTime(isChecked ? 0 : 1200)}
-                    size={48}   // Add a size prop to the Checkbox component
-                />
+                <Text style={styles.helperText}>Disable reminders</Text>
                 <Text>{time} seconds</Text>
                 <Button title="Save" onPress={handleSave} />
             </View>
@@ -101,6 +92,9 @@ const styles = StyleSheet.create({
     slider: {
         width: '80%',
         marginBottom: 16,
+    },
+    helperText: {
+        marginVertical: 12,
     },
 });
 

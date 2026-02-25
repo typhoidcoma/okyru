@@ -3,6 +3,8 @@ import App from '../App'; // Add the correct relative path to the 'App' componen
 import renderer from 'react-test-renderer';
 
 test('renders correctly', () => {
-    const tree = renderer.create(<App />).toJSON();
+    const rendered = renderer.create(<App />);
+    const tree = rendered.toJSON();
+    rendered.unmount();
     expect(tree).toMatchSnapshot();
 });

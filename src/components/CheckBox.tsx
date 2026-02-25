@@ -1,4 +1,3 @@
-
 /**
  * Checkbox component for selecting or deselecting an option.
  *
@@ -10,7 +9,7 @@
  *
  * @returns {React.ReactElement} The rendered Checkbox component.
  */
-import React, { useState } from 'react';
+import React from 'react';
 import { TouchableOpacity, Image, StyleProp, ViewStyle, ImageStyle } from 'react-native';
 
 interface CheckboxProps {

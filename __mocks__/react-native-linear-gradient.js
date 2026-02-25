@@ -1,7 +1,4 @@
-import React from 'react';
-jest.mock('react-native-linear-gradient', () => {
-    // Mocked component
-    return function LinearGradient(props) {
-        return <div {...props} />;
-    };
-});
+const React = require('react');
+const { View } = require('react-native');
+
+module.exports = ({ children, ...props }) => React.createElement(View, props, children);

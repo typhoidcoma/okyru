@@ -3,6 +3,12 @@ import SplashScreen from '../src/screens/SplashScreen'; // Add the correct relat
 import renderer from 'react-test-renderer';
 
 test('renders correctly', () => {
-    const tree = renderer.create(<SplashScreen navigation={undefined} />).toJSON();
+    jest.useFakeTimers();
+    const navigation = { replace: jest.fn() } as any;
+    const rendered = renderer.create(<SplashScreen navigation={navigation} />);
+    const tree = rendered.toJSON();
+    rendered.unmount();
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
     expect(tree).toMatchSnapshot();
 });

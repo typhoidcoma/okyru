@@ -1,13 +1,16 @@
-import { StackNavigationProp } from '@react-navigation/stack'; // Importing StackNavigationProp for navigation
+import { NativeStackNavigationProp } from '@react-navigation/native-stack'; // Importing navigation type
+import { useFocusEffect } from '@react-navigation/native';
 import { View, StyleSheet } from 'react-native';
 import CircularTimer from '../components/CircularTimer'; // Importing CircularTimer component
 import CustomLinearGradient from '../components/CustomLinearGradient'; // Importing CustomLinearGradient component
 import IconButton from '../components/IconButton'; // Importing IconButton component
 import ModalScreen from '../screens/ModalScreen'; // Importing ModalScreen component
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
+import { RootStackParamList } from '../navigation/types';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type HomeScreenProps = {
-    navigation: StackNavigationProp<any>; // Define the type for navigation prop
+    navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
 };
 
 // Define the HomeScreen component
@@ -16,6 +19,27 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     // State to track whether modal has been opened
     const [modalOpened, setModalOpened] = useState(false);
+    const [timerSeconds, setTimerSeconds] = useState(1200);
+
+    const loadSettings = useCallback(async () => {
+        try {
+            const savedSettings = await AsyncStorage.getItem('timerSettings');
+            if (savedSettings) {
+                const { time: savedTime } = JSON.parse(savedSettings);
+                if (typeof savedTime === 'number' && savedTime > 0) {
+                    setTimerSeconds(savedTime);
+                }
+            }
+        } catch (error) {
+            console.error('Error loading settings:', error);
+        }
+    }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            loadSettings();
+        }, [loadSettings])
+    );
 
     // Function to handle timer done event
     const handleTimerDone = () => {
@@ -46,7 +70,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
                 <CircularTimer
                     size={270}
                     strokeWidth={6}
-                    time={30}
+                    time={timerSeconds}
                     color="#ffffff"
                     // Pass the function to handle timer done event
                     onTimerDone={handleTimerDone}

@@ -17,8 +17,14 @@ import { Animated } from 'react-native';
 import { GlobalStyles } from '../styles/GlobalStyles';
 import CustomLinearGradient from '../components/CustomLinearGradient';
 import OkyruLogo from '../components/OkyruLogo';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../navigation/types';
 
-const SplashScreen: React.FC<any> = ({ navigation }) => {
+type SplashScreenProps = {
+    navigation: NativeStackNavigationProp<RootStackParamList, 'Splash'>;
+};
+
+const SplashScreen: React.FC<SplashScreenProps> = ({ navigation }) => {
     const [fadeAnim] = useState(new Animated.Value(1)); // Initial value for opacity: 1
 
     useEffect(() => {
