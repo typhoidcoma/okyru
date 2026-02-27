@@ -1,10 +1,11 @@
-import { NativeStackNavigationProp } from '@react-navigation/native-stack'; // Importing navigation type
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useFocusEffect } from '@react-navigation/native';
-import { View, StyleSheet } from 'react-native';
-import CircularTimer from '../components/CircularTimer'; // Importing CircularTimer component
-import CustomLinearGradient from '../components/CustomLinearGradient'; // Importing CustomLinearGradient component
-import IconButton from '../components/IconButton'; // Importing IconButton component
-import ModalScreen from '../screens/ModalScreen'; // Importing ModalScreen component
+import { View, Text, StyleSheet } from 'react-native';
+import CircularTimer from '../components/CircularTimer';
+import CustomLinearGradient from '../components/CustomLinearGradient';
+import NavBar from '../components/NavBar';
+import GearButton from '../components/GearButton';
+import ModalScreen from '../screens/ModalScreen';
 import React, { useCallback, useState } from 'react';
 import { RootStackParamList } from '../navigation/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -13,11 +14,8 @@ type HomeScreenProps = {
     navigation: NativeStackNavigationProp<RootStackParamList, 'Home'>;
 };
 
-// Define the HomeScreen component
 const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
-    // State to manage modal visibility
     const [modalVisible, setModalVisible] = useState(false);
-    // State to track whether modal has been opened
     const [modalOpened, setModalOpened] = useState(false);
     const [timerSeconds, setTimerSeconds] = useState(1200);
 
@@ -41,63 +39,56 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ navigation }) => {
         }, [loadSettings])
     );
 
-    // Function to handle timer done event
     const handleTimerDone = () => {
-        // Show the modal only if it hasn't been opened before
         if (!modalOpened) {
             setModalVisible(true);
-            // Update the state to indicate that the modal has been opened
             setModalOpened(true);
         }
     };
 
-    // Function to close the modal
     const closeModal = () => {
         setModalVisible(false);
     };
 
-    // Function to reset the state to indicate that the modal hasn't been opened yet
     const resetModal = () => {
         setModalOpened(false);
     };
 
-    // Render the HomeScreen component
     return (
         <CustomLinearGradient style={styles.gradient}>
-            {/* Container for the main content */}
+            {/* Unified NavBar: wordmark left, gear button right */}
+            <NavBar
+                left={<Text style={styles.wordmark}>okyru</Text>}
+                right={
+                    <GearButton
+                        onPress={() => navigation.navigate('Settings')}
+                    />
+                }
+            />
+
+            {/* Main content */}
             <View style={styles.container}>
-                {/* Circular timer component */}
                 <CircularTimer
                     size={270}
                     strokeWidth={6}
                     time={timerSeconds}
                     color="#ffffff"
-                    // Pass the function to handle timer done event
                     onTimerDone={handleTimerDone}
-                    // Pass the function to reset modal state
                     onReset={resetModal}
                 />
-
-                {/* Rest of your UI components */}
-                {/* IconButton for navigation */}
-                <IconButton
-                    svgIconName="26_Menu"
-                    width={80}
-                    height={80}
-                    // Navigate to Settings screen on press
-                    onPress={() => navigation.navigate('Settings')}
-                />
-                {/* Text component */}
-                {/* <Text style={[GlobalStyles.text, styles.appName]}>okyru</Text> */}
-                {/* <Image style={[ styles.appName]} source={require('../assets/logos/okyru_logo_text.png')} /> */}
             </View>
-            {/* ModalScreen component, conditionally rendered based on modalVisible state */}
+
+            {/* Bottom wordmark */}
+            <View style={styles.bottomWordmark}>
+                <Text style={styles.bottomWordmarkText}>okyru</Text>
+            </View>
+
+            {/* Modal overlay */}
             {modalVisible && <ModalScreen onClose={closeModal} />}
         </CustomLinearGradient>
     );
 };
 
-// Define the styles for the HomeScreen component
 const styles = StyleSheet.create({
     gradient: {
         flex: 1,
@@ -107,13 +98,23 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    appName: {
-        marginVertical: 24,
-        alignSelf: 'auto',
-        width: 48,
-        height: 18.65,
+    wordmark: {
+        fontFamily: 'NirmalaB',
+        fontSize: 16,
+        fontWeight: '700',
+        color: 'rgba(224,64,48,0.5)',
+        letterSpacing: 2,
+    },
+    bottomWordmark: {
+        alignItems: 'center',
+        paddingBottom: 24,
+    },
+    bottomWordmarkText: {
+        fontFamily: 'Nirmala',
+        fontSize: 13,
+        color: 'rgba(224,64,48,0.4)',
+        letterSpacing: 3,
     },
 });
 
-// Export the HomeScreen component as default
 export default HomeScreen;
