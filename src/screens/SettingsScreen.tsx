@@ -1,278 +1,269 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+/**
+ * SettingsScreen — FlatDark theme.
+ *
+ * Exercise icon grid: 5 cols × 5 rows, 48px icons with labels underneath.
+ * Icons are multi-select toggles (independent on/off).
+ * Timer duration slider (1–30 min).
+ * Settings auto-save when navigating back.
+ */
+
+import React, { useState, useEffect, useRef } from 'react';
+import {
+    View,
+    Text,
+    StyleSheet,
+    TouchableOpacity,
+    Animated,
+    Dimensions,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Slider from '@react-native-community/slider';
 import CustomLinearGradient from '../components/CustomLinearGradient';
-import NavBar from '../components/NavBar';
-import BackButton from '../components/BackButton';
 import Icon from '../components/Icon';
 import { IconName } from '../components/IconNames';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/types';
+import { bounceSelect } from '../utils/animations';
+import TimerDurationSlider from '../components/TimerDurationSlider';
+import { formatExerciseLabel } from '../utils/exerciseUtils';
 
-// Exercise grid layout matching Figma (5 columns × 5 rows)
-const EXERCISE_GRID: { id: IconName; label: string }[][] = [
-    [
-        { id: '01_run', label: 'Run' },
-        { id: '02_swim', label: 'Swim' },
-        { id: '03_bandstretchs', label: 'Band Stretch' },
-        { id: '04_standingstretch', label: 'Standing Stretch' },
-        { id: '10_liftedlegsitups', label: 'Leg Sit-ups' },
-    ],
-    [
-        { id: '06_bike', label: 'Bike' },
-        { id: '07_walk', label: 'Walk' },
-        { id: '08_lift', label: 'Lift' },
-        { id: '05_stepups', label: 'Step-ups' },
-        { id: '20_standingtoetouch', label: 'Toe Touch' },
-    ],
-    [
-        { id: '11_crunches', label: 'Crunches' },
-        { id: '12_pushups', label: 'Push-ups' },
-        { id: '09_situps', label: 'Sit-ups' },
-        { id: '15_dumbellpress', label: 'Dumbbell Press' },
-        { id: '25_weightedlegdip', label: 'Weighted Leg Dip' },
-    ],
-    [
-        { id: '16_leglifts', label: 'Leg Lifts' },
-        { id: '18_treadmil', label: 'Treadmill' },
-        { id: '13_dumbelllifts', label: 'Dumbbell Lifts' },
-        { id: '14_leglift', label: 'Leg Lift' },
-        { id: '24_batlleropes', label: 'Battle Ropes' },
-    ],
-    [
-        { id: '21_stationarybike', label: 'Stationary Bike' },
-        { id: '17_jumprope', label: 'Jump Rope' },
-        { id: '23_skimachine', label: 'Ski Machine' },
-        { id: '19_kettlebell', label: 'Kettlebell' },
-        { id: '22_yogapose', label: 'Yoga' },
-    ],
+const EXERCISE_GRID: IconName[][] = [
+    ['01_run', '02_swim', '03_bandstretchs', '04_standingstretch', '10_liftedlegsitups'],
+    ['06_bike', '07_walk', '08_lift', '05_stepups', '20_standingtoetouch'],
+    ['11_crunches', '12_pushups', '09_situps', '15_dumbellpress', '25_weightedlegdip'],
+    ['16_leglifts', '18_treadmil', '13_dumbelllifts', '14_leglift', '24_batlleropes'],
+    ['21_stationarybike', '17_jumprope', '23_skimachine', '19_kettlebell', '22_yogapose'],
 ];
+
+const ICON_SIZE = 44;
+const ICON_COLOR_UNSELECTED = '#8A3028';
+const ICON_COLOR_SELECTED = '#E84030';
+const LABEL_COLOR_UNSELECTED = 'rgba(138, 48, 40, 0.6)';
+const LABEL_COLOR_SELECTED = 'rgba(232, 64, 48, 0.8)';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+
+const ROW_SPACING = 80;
 
 interface SettingsScreenProps {
     navigation: NativeStackNavigationProp<RootStackParamList, 'Settings'>;
 }
 
-const ICON_SIZE = 48;
-const ICON_COLOR = '#E04030';
-const ICON_COLOR_SELECTED = '#FF6B5E';
-
 const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
     const [time, setTime] = useState(1200);
-    const [enabled, setEnabled] = useState(true);
-    const [selectedExercise, setSelectedExercise] = useState<IconName | null>(null);
+    const [selectedExercises, setSelectedExercises] = useState<Set<IconName>>(new Set());
+
+    // Animation refs for each exercise icon
+    const scaleAnims = useRef<{ [key: string]: Animated.Value }>({}).current;
+
+    const getScaleAnim = (id: string): Animated.Value => {
+        if (!scaleAnims[id]) {
+            scaleAnims[id] = new Animated.Value(1);
+        }
+        return scaleAnims[id];
+    };
 
     useEffect(() => {
         loadSettings();
     }, []);
 
+    // Auto-save when navigating away
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('beforeRemove', () => {
+            saveSettings();
+        });
+        return unsubscribe;
+    }, [navigation, time, selectedExercises]);
+
     const loadSettings = async () => {
         try {
             const savedSettings = await AsyncStorage.getItem('timerSettings');
             if (savedSettings) {
-                const { time: savedTime, exercise } = JSON.parse(savedSettings);
-                setTime(savedTime);
-                setEnabled(savedTime > 0);
-                if (exercise) setSelectedExercise(exercise);
+                const { time: savedTime, exercises, exercise } = JSON.parse(savedSettings);
+                if (typeof savedTime === 'number') setTime(savedTime);
+                if (exercises && Array.isArray(exercises)) {
+                    setSelectedExercises(new Set(exercises));
+                } else if (exercise) {
+                    setSelectedExercises(new Set([exercise]));
+                }
             }
         } catch (error) {
             console.error('Error loading settings:', error);
         }
     };
 
-    const handleSave = async () => {
+    const saveSettings = async () => {
         try {
             await AsyncStorage.setItem(
                 'timerSettings',
-                JSON.stringify({ time, exercise: selectedExercise })
+                JSON.stringify({ time, exercises: Array.from(selectedExercises) })
             );
-            navigation.goBack();
         } catch (error) {
             console.error('Error saving settings:', error);
         }
     };
 
-    const formatTime = (seconds: number): string => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    const handleExercisePress = (exerciseId: IconName) => {
+        const anim = getScaleAnim(exerciseId);
+        bounceSelect(anim);
+        setSelectedExercises(prev => {
+            const next = new Set(prev);
+            if (next.has(exerciseId)) {
+                next.delete(exerciseId);
+            } else {
+                next.add(exerciseId);
+            }
+            return next;
+        });
     };
 
-    const handleExercisePress = (exerciseId: IconName) => {
-        setSelectedExercise(prev => (prev === exerciseId ? null : exerciseId));
+    const handleReturn = () => {
+        saveSettings();
+        navigation.goBack();
     };
 
     return (
-        <CustomLinearGradient>
-            {/* Unified NavBar: back button left, title center */}
-            <NavBar
-                left={
-                    <BackButton onPress={() => navigation.goBack()} />
-                }
-                center={<Text style={styles.navTitle}>settings</Text>}
-            />
+        <CustomLinearGradient style={styles.gradient}>
+            {/* "settings" title */}
+            <Text style={styles.screenTitle}>settings</Text>
 
-            <ScrollView
-                style={styles.scrollView}
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={false}
-            >
-                {/* Exercise Icon Grid */}
-                <View style={styles.gridContainer}>
-                    {EXERCISE_GRID.map((row, rowIndex) => (
-                        <View key={rowIndex} style={styles.gridRow}>
-                            {row.map((exercise) => {
-                                const isSelected = selectedExercise === exercise.id;
-                                return (
+            {/* Timer Duration Slider */}
+            <View style={styles.sliderContainer}>
+                <TimerDurationSlider
+                    value={time}
+                    onValueChange={setTime}
+                />
+            </View>
+
+            {/* Exercise Icon Grid with Labels */}
+            <View style={styles.gridContainer}>
+                {EXERCISE_GRID.map((row, rowIndex) => (
+                    <View
+                        key={rowIndex}
+                        style={[
+                            styles.gridRow,
+                            { marginTop: rowIndex === 0 ? 0 : ROW_SPACING - ICON_SIZE - 16 },
+                        ]}
+                    >
+                        {row.map((exerciseId) => {
+                            const isSelected = selectedExercises.has(exerciseId);
+                            const scaleAnim = getScaleAnim(exerciseId);
+                            return (
+                                <Animated.View
+                                    key={exerciseId}
+                                    style={[
+                                        styles.iconCellWrapper,
+                                        { transform: [{ scale: scaleAnim }] },
+                                    ]}
+                                >
                                     <TouchableOpacity
-                                        key={exercise.id}
+                                        onPress={() => handleExercisePress(exerciseId)}
+                                        activeOpacity={0.6}
                                         style={[
                                             styles.iconCell,
                                             isSelected && styles.iconCellSelected,
                                         ]}
-                                        onPress={() => handleExercisePress(exercise.id)}
-                                        activeOpacity={0.7}
                                     >
                                         <Icon
-                                            iconName={exercise.id}
+                                            iconName={exerciseId}
                                             size={ICON_SIZE}
-                                            color={isSelected ? ICON_COLOR_SELECTED : ICON_COLOR}
+                                            color={isSelected ? ICON_COLOR_SELECTED : ICON_COLOR_UNSELECTED}
                                         />
                                     </TouchableOpacity>
-                                );
-                            })}
-                        </View>
-                    ))}
-                </View>
-
-                {/* Timer Settings */}
-                <View style={styles.timerSection}>
-                    <Text style={styles.timerLabel}>
-                        {enabled ? formatTime(time) : 'disabled'}
-                    </Text>
-
-                    <Slider
-                        style={styles.slider}
-                        minimumValue={1}
-                        maximumValue={3600}
-                        step={1}
-                        value={time}
-                        onValueChange={(value) => {
-                            setEnabled(true);
-                            setTime(value);
-                        }}
-                        minimumTrackTintColor="rgba(224,64,48,0.6)"
-                        maximumTrackTintColor="rgba(255,255,255,0.12)"
-                        thumbTintColor="rgba(224,64,48,0.8)"
-                        disabled={!enabled}
-                    />
-                </View>
-
-                {/* Save Button */}
-                <TouchableOpacity
-                    style={styles.saveButton}
-                    onPress={handleSave}
-                    activeOpacity={0.7}
-                >
-                    <Text style={styles.saveButtonText}>save</Text>
-                </TouchableOpacity>
-            </ScrollView>
-
-            {/* Bottom wordmark */}
-            <View style={styles.bottomWordmark}>
-                <Text style={styles.bottomWordmarkText}>okyru</Text>
+                                    <Text
+                                        style={[
+                                            styles.iconLabel,
+                                            { color: isSelected ? LABEL_COLOR_SELECTED : LABEL_COLOR_UNSELECTED },
+                                        ]}
+                                        numberOfLines={1}
+                                    >
+                                        {formatExerciseLabel(exerciseId)}
+                                    </Text>
+                                </Animated.View>
+                            );
+                        })}
+                    </View>
+                ))}
             </View>
+
+            {/* Spacer */}
+            <View style={styles.spacer} />
+
+            {/* Return icon */}
+            <TouchableOpacity
+                style={styles.returnButton}
+                onPress={handleReturn}
+                activeOpacity={0.6}
+            >
+                <Icon iconName="28_return" size={22} color="rgba(255,255,255,0.55)" />
+            </TouchableOpacity>
+
+            {/* Bottom padding */}
+            <View style={styles.bottomPadding} />
         </CustomLinearGradient>
     );
 };
 
 const styles = StyleSheet.create({
-    navTitle: {
-        fontFamily: 'Nirmala',
-        fontSize: 14,
-        color: 'rgba(255,255,255,0.5)',
-        letterSpacing: 2,
-        textTransform: 'lowercase',
-    },
-    scrollView: {
+    gradient: {
         flex: 1,
+    },
+    screenTitle: {
+        fontFamily: 'Nirmala',
+        fontSize: 32,
+        color: '#D8DCE3',
+        textAlign: 'center',
         marginTop: 90,
+        letterSpacing: 0,
     },
-    scrollContent: {
+    sliderContainer: {
         paddingHorizontal: 24,
-        paddingBottom: 16,
-        alignItems: 'center',
+        marginTop: 16,
     },
-    // Exercise icon grid
     gridContainer: {
-        width: '100%',
-        paddingVertical: 16,
+        paddingHorizontal: 20,
+        marginTop: 20,
     },
     gridRow: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginBottom: 20,
-        paddingHorizontal: 8,
+    },
+    iconCellWrapper: {
+        alignItems: 'center',
+        width: (SCREEN_WIDTH - 40) / 5,
     },
     iconCell: {
-        width: 56,
-        height: 56,
+        width: ICON_SIZE,
+        height: ICON_SIZE,
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 16,
+        opacity: 0.65,
     },
     iconCellSelected: {
-        backgroundColor: 'rgba(224,64,48,0.12)',
-        borderWidth: 1,
-        borderColor: 'rgba(224,64,48,0.25)',
+        opacity: 1,
+        shadowColor: '#EA0008',
+        shadowOffset: { width: 0, height: 0 },
+        shadowOpacity: 0.4,
+        shadowRadius: 8,
+        elevation: 6,
     },
-    // Timer section
-    timerSection: {
-        width: '100%',
-        alignItems: 'center',
-        paddingTop: 8,
-        paddingBottom: 16,
-        borderTopWidth: 1,
-        borderTopColor: 'rgba(255,255,255,0.06)',
-    },
-    timerLabel: {
+    iconLabel: {
         fontFamily: 'Nirmala',
-        fontSize: 28,
-        color: 'rgba(255,255,255,0.7)',
-        marginBottom: 16,
-        letterSpacing: 1,
+        fontSize: 9,
+        textAlign: 'center',
+        marginTop: 2,
     },
-    slider: {
-        width: '85%',
-        marginBottom: 8,
+    spacer: {
+        flex: 1,
     },
-    // Save button
-    saveButton: {
-        backgroundColor: 'rgba(224,64,48,0.15)',
-        borderWidth: 1,
-        borderColor: 'rgba(224,64,48,0.3)',
-        borderRadius: 24,
-        paddingHorizontal: 48,
-        paddingVertical: 14,
-        marginTop: 12,
-    },
-    saveButtonText: {
-        fontFamily: 'NirmalaB',
-        fontSize: 14,
-        color: 'rgba(224,64,48,0.7)',
-        letterSpacing: 2,
-        textTransform: 'lowercase',
-    },
-    // Bottom wordmark
-    bottomWordmark: {
+    returnButton: {
         alignItems: 'center',
-        paddingBottom: 24,
+        justifyContent: 'center',
+        width: 44,
+        height: 44,
+        alignSelf: 'center',
     },
-    bottomWordmarkText: {
-        fontFamily: 'Nirmala',
-        fontSize: 13,
-        color: 'rgba(224,64,48,0.4)',
-        letterSpacing: 3,
+    bottomPadding: {
+        height: 48,
     },
 });
 

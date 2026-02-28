@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(test -d c:/Users/tesse/Documents/Projects/okyru/node_modules)",
+      "Bash(echo $ANDROID_HOME)",
+      "Bash(echo $JAVA_HOME)"
+    ]
+  }
+}

@@ -28,6 +28,8 @@ const IconMapping: Record<IconName, React.FC<React.SVGProps<SVGSVGElement>>> = {
     '24_batlleropes': require('../assets/icons/24_batlleropes.svg').default,
     '25_weightedlegdip': require('../assets/icons/25_weightedlegdip.svg').default,
     '26_Menu': require('../assets/icons/26_Menu.svg').default,
+    '28_return': require('../assets/icons/28_return.svg').default,
+    '29_stats': require('../assets/icons/29_stats.svg').default,
 };
 
 export default IconMapping;

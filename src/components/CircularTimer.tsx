@@ -1,32 +1,24 @@
 /**
- * CircularTimer Component.
+ * CircularTimer Component — FlatDark theme.
  *
- * This component displays a circular timer with customizable attributes such as size, stroke width, color, and time duration.
+ * Matches Figma node 203:272 (main_timer).
  *
- * @file CircularTimer.tsx
- * @component
- * @param {object} props - Props for the CircularTimer component
- * @param {number} props.size - Size of the circular timer
- * @param {number} props.strokeWidth - Width of the stroke used in the circular timer
- * @param {number} props.time - Duration of the timer in seconds
- * @param {string} props.color - Color of the circular timer
- * @param {() => void} props.onReset - Callback function to reset the timer
- * @param {() => void} props.onTimerDone - Callback function triggered when the timer is done
- * @returns {JSX.Element} A JSX element representing the CircularTimer component
- * @example
- * <CircularTimer
- *    size={220}
- *    strokeWidth={8}
- *    time={60}
- *    color="rgba(234,0,8,.65)"
- *    onReset={handleReset}
- *    onTimerDone={handleTimerDone}
- * />
+ * State machine: idle → running → paused → running → completed
+ *
+ * Visual layers (SVG circles):
+ *   1. Outer ring: thin dark border (276px)
+ *   2. Progress track: faint background ring
+ *   3. Progress ring: red arc that depletes as timer counts down
+ *   4. Inner circle: dark filled disc
+ *   + Timer text overlay in RED (#EA0008) per Figma
+ *
+ * NOTE: StartButton is NOT rendered inside this component.
+ * The parent screen controls layout of timer + button separately,
+ * matching Figma positioning.
  */
 
-import { View, Text, StyleSheet, ImageBackground, Vibration } from 'react-native';
+import { View, Text, StyleSheet, Vibration, Animated, Easing } from 'react-native';
 import BackgroundTimer from 'react-native-background-timer';
-import GlobalStyles from '../styles/GlobalStyles';
 import React, {
     useState,
     useEffect,
@@ -35,47 +27,71 @@ import React, {
     useImperativeHandle,
     useCallback,
 } from 'react';
-import StartButton from './StartButton';
-import Svg, { Circle } from 'react-native-svg';
+import { TimerState } from './StartButton';
+import Svg, { Circle, Defs, LinearGradient, Stop } from 'react-native-svg';
+
+const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 interface CircularTimerProps {
     color: string;
     onReset: () => void;
     onTimerDone: () => void;
+    onTimerStateChange?: (state: TimerState) => void;
+    onButtonPress?: () => void;
     size: number;
     strokeWidth: number;
-    time: number; // Input time in seconds
+    time: number;
 }
 
-interface CircularTimerRef {
+export interface CircularTimerRef {
     resetTimer: () => void;
+    getTimerState: () => TimerState;
+    handleButtonPress: () => void;
+    getCurrentTime: () => number;
 }
+
+// FlatDark theme colors
+const OUTER_RING_COLOR = '#3A4858';
+const OUTER_RING_STROKE = 2;
+const PROGRESS_RING_COLOR = '#EA0008';
+const PROGRESS_RING_PAUSED = '#8A3030';
+const PROGRESS_BG_COLOR = '#1E2530';
+const INNER_CIRCLE_COLOR = '#1C2333';
+const TIMER_TEXT_COLOR = '#FFFFFF'; // Figma: white timer text
 
 const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTimerProps> = (
-    { size, strokeWidth, time, color, onTimerDone, onReset },
+    { size, strokeWidth, time, color, onTimerDone, onReset, onTimerStateChange },
     ref
 ) => {
     const [currentTime, setCurrentTime] = useState<number>(time);
-    const [isRunning, setIsRunning] = useState<boolean>(true);
+    const [timerState, setTimerState] = useState<TimerState>('idle');
     const intervalRef = useRef<number | null>(null);
 
-    const stopTimer = useCallback(() => {
+    // Animated progress value (0 = full, 1 = empty)
+    const progressAnim = useRef(new Animated.Value(0)).current;
+
+    const updateState = useCallback((newState: TimerState) => {
+        setTimerState(newState);
+        onTimerStateChange?.(newState);
+    }, [onTimerStateChange]);
+
+    const stopInterval = useCallback(() => {
         if (intervalRef.current !== null) {
             BackgroundTimer.clearInterval(intervalRef.current);
             intervalRef.current = null;
         }
     }, []);
 
-    const startTimer = useCallback(
-        (initialTime: number) => {
-            stopTimer();
-            setCurrentTime(initialTime);
-            setIsRunning(true);
+    const startCountdown = useCallback(
+        (fromTime: number) => {
+            stopInterval();
+            updateState('running');
+
             intervalRef.current = BackgroundTimer.setInterval(() => {
                 setCurrentTime((prevTime) => {
                     if (prevTime <= 1) {
-                        stopTimer();
-                        setIsRunning(false);
+                        stopInterval();
+                        updateState('completed');
                         onTimerDone();
                         Vibration.vibrate([200, 1000, 200, 1000]);
                         return 0;
@@ -84,30 +100,98 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
                 });
             }, 1000);
         },
-        [onTimerDone, stopTimer]
+        [onTimerDone, stopInterval, updateState]
     );
 
-    // Function to reset the timer to its initial time
-    const resetTimer = () => {
-        onReset(); // Call the onReset function to reset the modalOpened state
-        startTimer(time);
-    };
+    // Smooth progress animation per tick
+    useEffect(() => {
+        if (timerState === 'running' && time > 0) {
+            const targetProgress = 1 - currentTime / time;
+            Animated.timing(progressAnim, {
+                toValue: targetProgress,
+                duration: 900,
+                easing: Easing.linear,
+                useNativeDriver: false,
+            }).start();
+        } else if (timerState === 'completed') {
+            Animated.timing(progressAnim, {
+                toValue: 1,
+                duration: 300,
+                useNativeDriver: false,
+            }).start();
+        }
+    }, [currentTime, timerState, time, progressAnim]);
 
-    // Expose the resetTimer function through the ref
+    // Exposed to parent via ref — called when StartButton is pressed
+    const handleButtonPress = useCallback(() => {
+        switch (timerState) {
+            case 'idle':
+                startCountdown(time);
+                break;
+            case 'running':
+                stopInterval();
+                updateState('paused');
+                break;
+            case 'paused':
+                startCountdown(currentTime);
+                break;
+            case 'completed':
+                setCurrentTime(time);
+                progressAnim.setValue(0);
+                onReset();
+                startCountdown(time);
+                break;
+        }
+    }, [timerState, time, currentTime, startCountdown, stopInterval, updateState, onReset, progressAnim]);
+
+    const resetTimer = useCallback(() => {
+        stopInterval();
+        setCurrentTime(time);
+        progressAnim.setValue(0);
+        updateState('idle');
+        onReset();
+    }, [time, stopInterval, updateState, onReset, progressAnim]);
+
     useImperativeHandle(ref, () => ({
         resetTimer,
+        getTimerState: () => timerState,
+        handleButtonPress,
+        getCurrentTime: () => currentTime,
     }));
 
+    // Reset when time prop changes
     useEffect(() => {
-        startTimer(time);
+        stopInterval();
+        setCurrentTime(time);
+        progressAnim.setValue(0);
+        setTimerState('idle');
+        // Defer parent callback to avoid setState-during-render warning
+        setTimeout(() => onTimerStateChange?.('idle'), 0);
+    }, [time]);
 
+    // Cleanup on unmount
+    useEffect(() => {
         return () => {
-            stopTimer();
+            stopInterval();
         };
-    }, [startTimer, stopTimer, time]);
+    }, [stopInterval]);
 
-    const circumference = 2 * Math.PI * (size / 2 - strokeWidth / 2);
-    const strokeDashoffset = (currentTime / Math.max(time, 1)) * circumference;
+    // --- SVG geometry ---
+    const outerRadius = size / 2 - OUTER_RING_STROKE / 2;
+    const progressRadius = size / 2 - strokeWidth / 2 - OUTER_RING_STROKE;
+    const circumference = 2 * Math.PI * progressRadius;
+    const innerRadius = size / 2 - strokeWidth - OUTER_RING_STROKE - 2;
+
+    const animatedOffset = progressAnim.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, circumference],
+    });
+
+    const ringOpacity = timerState === 'idle' ? 0.5
+        : timerState === 'paused' ? 0.6
+        : 1.0;
+
+    const isPaused = timerState === 'paused';
 
     const formatTime = (seconds: number) => {
         const minutes = Math.floor(seconds / 60)
@@ -117,71 +201,117 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
         return `${minutes}:${remainingSeconds}`;
     };
 
-    const image = require('../assets/images/backgrounds/timerBG_red.png');
+    const center = size / 2;
+
+    // Timer text opacity varies by state
+    const textOpacity = timerState === 'idle' ? 0.6
+        : timerState === 'paused' ? 0.5
+        : 1.0;
 
     return (
-        <View style={styles.container}>
-            <ImageBackground source={image} resizeMode="cover" style={styles.imagaContainer}>
-                <View style={styles.timerCircleContainer}>
-                    <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
-                        <Circle
-                            cx={size / 2}
-                            cy={size / 2}
-                            r={size / 2 - strokeWidth / 2}
-                            stroke={color}
-                            strokeWidth={strokeWidth}
-                            strokeLinecap="round"
-                            strokeDasharray={circumference}
-                            strokeDashoffset={strokeDashoffset}
-                            fill="transparent"
-                            rotation="-90"
-                            origin={`${size / 2}, ${size / 2}`}
+        <View style={[styles.timerWrapper, { width: size, height: size }]}>
+            <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
+                <Defs>
+                    <LinearGradient
+                        id="ringGrad"
+                        x1="0" y1="0" x2="1" y2="1"
+                    >
+                        <Stop
+                            offset="0"
+                            stopColor={isPaused ? '#9A4545' : '#FF4040'}
                         />
-                    </Svg>
-                    {/* Text in the middle of the circle */}
-                    <View style={styles.textContainer}>
-                        <Text style={GlobalStyles.timerText}>{formatTime(currentTime)}</Text>
-                    </View>
-                </View>
-            </ImageBackground>
+                        <Stop
+                            offset="1"
+                            stopColor={isPaused ? '#5A2020' : '#8B0000'}
+                        />
+                    </LinearGradient>
+                </Defs>
 
-            <View style={styles.startButtonContainer}>
-                {/* StartButton to control the timer */}
-                <StartButton onPress={resetTimer} isRunning={isRunning} />
+                {/* 1. Outer dark border ring */}
+                <Circle
+                    cx={center}
+                    cy={center}
+                    r={outerRadius}
+                    stroke={OUTER_RING_COLOR}
+                    strokeWidth={OUTER_RING_STROKE}
+                    fill="transparent"
+                />
+
+                {/* 2. Progress track */}
+                <Circle
+                    cx={center}
+                    cy={center}
+                    r={progressRadius}
+                    stroke={PROGRESS_BG_COLOR}
+                    strokeWidth={strokeWidth}
+                    fill="transparent"
+                />
+
+                {/* 3. Progress ring (animated gradient arc) */}
+                <AnimatedCircle
+                    cx={center}
+                    cy={center}
+                    r={progressRadius}
+                    stroke="url(#ringGrad)"
+                    strokeWidth={strokeWidth}
+                    strokeLinecap="round"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={animatedOffset}
+                    fill="transparent"
+                    rotation={-90}
+                    origin={`${center}, ${center}`}
+                    opacity={ringOpacity}
+                />
+
+                {/* 4. Inner dark filled circle */}
+                <Circle
+                    cx={center}
+                    cy={center}
+                    r={innerRadius}
+                    fill={INNER_CIRCLE_COLOR}
+                />
+            </Svg>
+
+            {/* Timer text overlay */}
+            <View style={styles.textContainer}>
+                <Text style={[styles.timerText, { opacity: timerState === 'paused' ? 0 : textOpacity }]}>
+                    {formatTime(currentTime)}
+                </Text>
+                {timerState === 'paused' && (
+                    <View style={styles.pausedOverlay}>
+                        <Text style={styles.pausedText}>paused</Text>
+                    </View>
+                )}
             </View>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
+    timerWrapper: {
         alignItems: 'center',
-        flex: 1,
         justifyContent: 'center',
-    },
-    imagaContainer: {
-        alignContent: 'center',
-        alignItems: 'center',
-        width: 480,
-        height: 480,
-        justifyContent: 'center',
-    },
-    timerCircleContainer: {
-        alignItems: 'center',
-        flex: 1,
-        justifyContent: 'center',
-        position: 'absolute',
     },
     textContainer: {
         alignItems: 'center',
         width: '100%',
         position: 'absolute',
-        transform: [{ translateY: -10 }],
     },
-    startButtonContainer: {
-        // position: 'absolute',
-        // marginTop: 32,
-        marginVertical: 12,
+    timerText: {
+        fontFamily: 'Nirmala',
+        fontSize: 64,
+        color: TIMER_TEXT_COLOR,
+    },
+    pausedOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    pausedText: {
+        fontFamily: 'Nirmala',
+        fontSize: 28,
+        color: 'rgba(255, 255, 255, 0.5)',
+        letterSpacing: 4,
     },
 });
 

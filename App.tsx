@@ -5,6 +5,8 @@ import HomeScreen from './src/screens/HomeScreen';
 import SplashScreen from './src/screens/SplashScreen';
 import IconTestScreen from './src/screens/IconTestScreen';
 import SettingsScreen from './src/screens/SettingsScreen';
+import ExercisesScreen from './src/screens/ExercisesScreen';
+import StatsScreen from './src/screens/StatsScreen';
 import { IconProvider } from './src/components/IconProvider';
 import { RootStackParamList } from './src/navigation/types';
 // import { LightTheme } from './src/styles/Theme';
@@ -15,27 +17,19 @@ const App = () => {
     return (
         <IconProvider>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Splash">
-                    <Stack.Screen
-                        name="Splash"
-                        component={SplashScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="Home"
-                        component={HomeScreen}
-                        options={{ headerShown: false }}
-                    />
-                    <Stack.Screen
-                        name="Icon Test Screen"
-                        component={IconTestScreen}
-                        options={{ headerShown: true }}
-                    />
-                    <Stack.Screen
-                        name="Settings"
-                        component={SettingsScreen}
-                        options={{ headerShown: false }}
-                    />
+                <Stack.Navigator
+                    initialRouteName="Splash"
+                    screenOptions={{
+                        animation: 'none',
+                        headerShown: false,
+                    }}
+                >
+                    <Stack.Screen name="Splash" component={SplashScreen} />
+                    <Stack.Screen name="Home" component={HomeScreen} />
+                    <Stack.Screen name="Icon Test Screen" component={IconTestScreen} />
+                    <Stack.Screen name="Settings" component={SettingsScreen} />
+                    <Stack.Screen name="Exercises" component={ExercisesScreen} />
+                    <Stack.Screen name="Stats" component={StatsScreen} />
                 </Stack.Navigator>
             </NavigationContainer>
         </IconProvider>

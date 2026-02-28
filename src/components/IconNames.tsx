@@ -25,4 +25,6 @@ export type IconName =
     | '23_skimachine'
     | '24_batlleropes'
     | '25_weightedlegdip'
-    | '26_Menu';
+    | '26_Menu'
+    | '28_return'
+    | '29_stats';

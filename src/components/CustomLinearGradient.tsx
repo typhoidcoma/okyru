@@ -13,11 +13,11 @@ const CustomLinearGradient: React.FC<CustomLinearGradientProps> = ({ children, s
     return (
         <View style={[styles.container, style]}>
             <LinearGradient
-                colors={['#273243', '#1f2a3a', '#182231', '#101a28', '#0b1420', '#070d16']}
+                colors={['#212733', '#1b2230', '#151c2a', '#0f1622', '#0b101b', '#080B15']}
                 locations={[0, 0.16, 0.34, 0.56, 0.78, 1]}
                 style={StyleSheet.absoluteFill}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
+                start={{ x: 0.35, y: 0 }}
+                end={{ x: 0.65, y: 1 }}
             />
 
             {/* Soft overlay to break up visible 8-bit band edges on dark Android gradients */}
