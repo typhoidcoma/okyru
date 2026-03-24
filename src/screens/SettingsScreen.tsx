@@ -7,15 +7,8 @@
  * Settings auto-save when navigating back.
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    TouchableOpacity,
-    Animated,
-    Dimensions,
-} from 'react-native';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomLinearGradient from '../components/CustomLinearGradient';
 import Icon from '../components/Icon';
@@ -72,14 +65,16 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
             saveSettings();
         });
         return unsubscribe;
-    }, [navigation, time, selectedExercises]);
+    }, [navigation, saveSettings]);
 
     const loadSettings = async () => {
         try {
             const savedSettings = await AsyncStorage.getItem('timerSettings');
             if (savedSettings) {
                 const { time: savedTime, exercises, exercise } = JSON.parse(savedSettings);
-                if (typeof savedTime === 'number') setTime(savedTime);
+                if (typeof savedTime === 'number') {
+                    setTime(savedTime);
+                }
                 if (exercises && Array.isArray(exercises)) {
                     setSelectedExercises(new Set(exercises));
                 } else if (exercise) {
@@ -91,7 +86,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         }
     };
 
-    const saveSettings = async () => {
+    const saveSettings = useCallback(async () => {
         try {
             await AsyncStorage.setItem(
                 'timerSettings',
@@ -100,12 +95,12 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
         } catch (error) {
             console.error('Error saving settings:', error);
         }
-    };
+    }, [time, selectedExercises]);
 
     const handleExercisePress = (exerciseId: IconName) => {
         const anim = getScaleAnim(exerciseId);
         bounceSelect(anim);
-        setSelectedExercises(prev => {
+        setSelectedExercises((prev) => {
             const next = new Set(prev);
             if (next.has(exerciseId)) {
                 next.delete(exerciseId);
@@ -128,10 +123,7 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
 
             {/* Timer Duration Slider */}
             <View style={styles.sliderContainer}>
-                <TimerDurationSlider
-                    value={time}
-                    onValueChange={setTime}
-                />
+                <TimerDurationSlider value={time} onValueChange={setTime} />
             </View>
 
             {/* Exercise Icon Grid with Labels */}
@@ -166,13 +158,21 @@ const SettingsScreen: React.FC<SettingsScreenProps> = ({ navigation }) => {
                                         <Icon
                                             iconName={exerciseId}
                                             size={ICON_SIZE}
-                                            color={isSelected ? ICON_COLOR_SELECTED : ICON_COLOR_UNSELECTED}
+                                            color={
+                                                isSelected
+                                                    ? ICON_COLOR_SELECTED
+                                                    : ICON_COLOR_UNSELECTED
+                                            }
                                         />
                                     </TouchableOpacity>
                                     <Text
                                         style={[
                                             styles.iconLabel,
-                                            { color: isSelected ? LABEL_COLOR_SELECTED : LABEL_COLOR_UNSELECTED },
+                                            {
+                                                color: isSelected
+                                                    ? LABEL_COLOR_SELECTED
+                                                    : LABEL_COLOR_UNSELECTED,
+                                            },
                                         ]}
                                         numberOfLines={1}
                                     >

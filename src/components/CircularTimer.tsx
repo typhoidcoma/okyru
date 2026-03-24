@@ -53,14 +53,12 @@ export interface CircularTimerRef {
 // FlatDark theme colors
 const OUTER_RING_COLOR = '#3A4858';
 const OUTER_RING_STROKE = 2;
-const PROGRESS_RING_COLOR = '#EA0008';
-const PROGRESS_RING_PAUSED = '#8A3030';
 const PROGRESS_BG_COLOR = '#1E2530';
 const INNER_CIRCLE_COLOR = '#1C2333';
 const TIMER_TEXT_COLOR = '#FFFFFF'; // Figma: white timer text
 
 const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTimerProps> = (
-    { size, strokeWidth, time, color, onTimerDone, onReset, onTimerStateChange },
+    { size, strokeWidth, time, onTimerDone, onReset, onTimerStateChange },
     ref
 ) => {
     const [currentTime, setCurrentTime] = useState<number>(time);
@@ -70,10 +68,13 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     // Animated progress value (0 = full, 1 = empty)
     const progressAnim = useRef(new Animated.Value(0)).current;
 
-    const updateState = useCallback((newState: TimerState) => {
-        setTimerState(newState);
-        onTimerStateChange?.(newState);
-    }, [onTimerStateChange]);
+    const updateState = useCallback(
+        (newState: TimerState) => {
+            setTimerState(newState);
+            onTimerStateChange?.(newState);
+        },
+        [onTimerStateChange]
+    );
 
     const stopInterval = useCallback(() => {
         if (intervalRef.current !== null) {
@@ -83,7 +84,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     }, []);
 
     const startCountdown = useCallback(
-        (fromTime: number) => {
+        (_fromTime: number) => {
             stopInterval();
             updateState('running');
 
@@ -142,7 +143,16 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
                 startCountdown(time);
                 break;
         }
-    }, [timerState, time, currentTime, startCountdown, stopInterval, updateState, onReset, progressAnim]);
+    }, [
+        timerState,
+        time,
+        currentTime,
+        startCountdown,
+        stopInterval,
+        updateState,
+        onReset,
+        progressAnim,
+    ]);
 
     const resetTimer = useCallback(() => {
         stopInterval();
@@ -167,6 +177,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
         setTimerState('idle');
         // Defer parent callback to avoid setState-during-render warning
         setTimeout(() => onTimerStateChange?.('idle'), 0);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [time]);
 
     // Cleanup on unmount
@@ -187,9 +198,7 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
         outputRange: [0, circumference],
     });
 
-    const ringOpacity = timerState === 'idle' ? 0.5
-        : timerState === 'paused' ? 0.6
-        : 1.0;
+    const ringOpacity = timerState === 'idle' ? 0.5 : timerState === 'paused' ? 0.6 : 1.0;
 
     const isPaused = timerState === 'paused';
 
@@ -204,26 +213,15 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
     const center = size / 2;
 
     // Timer text opacity varies by state
-    const textOpacity = timerState === 'idle' ? 0.6
-        : timerState === 'paused' ? 0.5
-        : 1.0;
+    const textOpacity = timerState === 'idle' ? 0.6 : timerState === 'paused' ? 0.5 : 1.0;
 
     return (
         <View style={[styles.timerWrapper, { width: size, height: size }]}>
             <Svg height={size} width={size} viewBox={`0 0 ${size} ${size}`}>
                 <Defs>
-                    <LinearGradient
-                        id="ringGrad"
-                        x1="0" y1="0" x2="1" y2="1"
-                    >
-                        <Stop
-                            offset="0"
-                            stopColor={isPaused ? '#9A4545' : '#FF4040'}
-                        />
-                        <Stop
-                            offset="1"
-                            stopColor={isPaused ? '#5A2020' : '#8B0000'}
-                        />
+                    <LinearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+                        <Stop offset="0" stopColor={isPaused ? '#9A4545' : '#FF4040'} />
+                        <Stop offset="1" stopColor={isPaused ? '#5A2020' : '#8B0000'} />
                     </LinearGradient>
                 </Defs>
 
@@ -264,17 +262,17 @@ const CircularTimer: React.ForwardRefRenderFunction<CircularTimerRef, CircularTi
                 />
 
                 {/* 4. Inner dark filled circle */}
-                <Circle
-                    cx={center}
-                    cy={center}
-                    r={innerRadius}
-                    fill={INNER_CIRCLE_COLOR}
-                />
+                <Circle cx={center} cy={center} r={innerRadius} fill={INNER_CIRCLE_COLOR} />
             </Svg>
 
             {/* Timer text overlay */}
             <View style={styles.textContainer}>
-                <Text style={[styles.timerText, { opacity: timerState === 'paused' ? 0 : textOpacity }]}>
+                <Text
+                    style={[
+                        styles.timerText,
+                        { opacity: timerState === 'paused' ? 0 : textOpacity },
+                    ]}
+                >
                     {formatTime(currentTime)}
                 </Text>
                 {timerState === 'paused' && (

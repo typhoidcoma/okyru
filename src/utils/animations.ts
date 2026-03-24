@@ -112,10 +112,7 @@ export const pulseAnimation = (
 /**
  * Bounce scale animation for selection feedback.
  */
-export const bounceSelect = (
-    animValue: Animated.Value,
-    callback?: () => void
-) => {
+export const bounceSelect = (animValue: Animated.Value, callback?: () => void) => {
     Animated.sequence([
         Animated.timing(animValue, {
             toValue: 0.85,

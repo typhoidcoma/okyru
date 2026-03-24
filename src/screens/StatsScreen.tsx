@@ -9,13 +9,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
-import {
-    View,
-    Text,
-    StyleSheet,
-    ScrollView,
-    TouchableOpacity,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import CustomLinearGradient from '../components/CustomLinearGradient';
@@ -65,9 +59,15 @@ function computeStats(sessions: WorkoutSession[]): StatsData {
 function formatTime(seconds: number): string {
     const hrs = Math.floor(seconds / 3600);
     const mins = Math.floor((seconds % 3600) / 60);
-    if (hrs > 0 && mins > 0) return `${hrs}h ${mins}m`;
-    if (hrs > 0) return `${hrs}h`;
-    if (mins > 0) return `${mins} min`;
+    if (hrs > 0 && mins > 0) {
+        return `${hrs}h ${mins}m`;
+    }
+    if (hrs > 0) {
+        return `${hrs}h`;
+    }
+    if (mins > 0) {
+        return `${mins} min`;
+    }
     return `${seconds}s`;
 }
 

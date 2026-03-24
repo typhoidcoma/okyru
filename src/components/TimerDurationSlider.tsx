@@ -25,10 +25,7 @@ function formatMinutes(seconds: number): string {
     return `${mins} min`;
 }
 
-const TimerDurationSlider: React.FC<TimerDurationSliderProps> = ({
-    value,
-    onValueChange,
-}) => {
+const TimerDurationSlider: React.FC<TimerDurationSliderProps> = ({ value, onValueChange }) => {
     const currentMinutes = Math.round(value / 60);
 
     const handleChange = (minutes: number) => {

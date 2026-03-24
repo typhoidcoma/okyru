@@ -11,13 +11,7 @@
  */
 
 import React, { useRef, useState } from 'react';
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    StyleSheet,
-    ScrollView,
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import CustomLinearGradient from '../components/CustomLinearGradient';
 import Icon from '../components/Icon';
@@ -34,10 +28,10 @@ const ExercisesScreen: React.FC<Props> = ({ navigation, route }) => {
     const startTime = useRef(Date.now()).current;
 
     const [results, setResults] = useState<ExerciseResult[]>(() =>
-        exercises.map(name => ({ name, completed: false }))
+        exercises.map((name) => ({ name, completed: false }))
     );
 
-    const allChecked = results.length > 0 && results.every(r => r.completed);
+    const allChecked = results.length > 0 && results.every((r) => r.completed);
     const hasExercises = exercises.length > 0;
 
     const saveAndNavigate = async (action: 'nextRound' | 'endSession') => {
@@ -57,23 +51,27 @@ const ExercisesScreen: React.FC<Props> = ({ navigation, route }) => {
     };
 
     const handleNextRound = () => {
-        if (!allChecked && hasExercises) return;
+        if (!allChecked && hasExercises) {
+            return;
+        }
         saveAndNavigate('nextRound');
     };
 
     const toggleExercise = (index: number) => {
-        setResults(prev =>
-            prev.map((r, i) =>
-                i === index ? { ...r, completed: !r.completed } : r
-            )
+        setResults((prev) =>
+            prev.map((r, i) => (i === index ? { ...r, completed: !r.completed } : r))
         );
     };
 
     const formatTime = (seconds: number): string => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
-        if (mins > 0 && secs > 0) return `${mins}m ${secs}s`;
-        if (mins > 0) return `${mins} min`;
+        if (mins > 0 && secs > 0) {
+            return `${mins}m ${secs}s`;
+        }
+        if (mins > 0) {
+            return `${mins} min`;
+        }
         return `${secs}s`;
     };
 
@@ -88,9 +86,7 @@ const ExercisesScreen: React.FC<Props> = ({ navigation, route }) => {
                 {/* Subtitle */}
                 {allChecked || !hasExercises ? (
                     duration > 0 && (
-                        <Text style={styles.subtitle}>
-                            {formatTime(duration)} completed
-                        </Text>
+                        <Text style={styles.subtitle}>{formatTime(duration)} completed</Text>
                     )
                 ) : (
                     <Text style={styles.subtitle}>do your exercises</Text>
@@ -98,10 +94,7 @@ const ExercisesScreen: React.FC<Props> = ({ navigation, route }) => {
 
                 {/* Exercise checklist */}
                 {hasExercises && (
-                    <ScrollView
-                        style={styles.exerciseList}
-                        showsVerticalScrollIndicator={false}
-                    >
+                    <ScrollView style={styles.exerciseList} showsVerticalScrollIndicator={false}>
                         {results.map((result, index) => (
                             <TouchableOpacity
                                 key={result.name}
@@ -112,7 +105,9 @@ const ExercisesScreen: React.FC<Props> = ({ navigation, route }) => {
                                 <Icon
                                     iconName={result.name}
                                     size={28}
-                                    color={result.completed ? FlatDark.accentRed : FlatDark.textSubtle}
+                                    color={
+                                        result.completed ? FlatDark.accentRed : FlatDark.textSubtle
+                                    }
                                 />
                                 <Text
                                     style={[
@@ -142,15 +137,13 @@ const ExercisesScreen: React.FC<Props> = ({ navigation, route }) => {
                         onPress={handleEndSession}
                         activeOpacity={0.7}
                     >
-                        <Text style={[styles.actionText, styles.endText]}>
-                            end session
-                        </Text>
+                        <Text style={[styles.actionText, styles.endText]}>end session</Text>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={[
                             styles.actionButton,
                             styles.nextRoundButton,
-                            (!allChecked && hasExercises) && styles.nextRoundDisabled,
+                            !allChecked && hasExercises && styles.nextRoundDisabled,
                         ]}
                         onPress={handleNextRound}
                         activeOpacity={0.7}
@@ -160,7 +153,7 @@ const ExercisesScreen: React.FC<Props> = ({ navigation, route }) => {
                             style={[
                                 styles.actionText,
                                 styles.nextRoundText,
-                                (!allChecked && hasExercises) && styles.nextRoundTextDisabled,
+                                !allChecked && hasExercises && styles.nextRoundTextDisabled,
                             ]}
                         >
                             next round

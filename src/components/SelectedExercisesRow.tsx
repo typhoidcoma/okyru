@@ -27,7 +27,9 @@ const SelectedExercisesRow: React.FC<SelectedExercisesRowProps> = ({ exercises }
         }).start();
     }, [fadeAnim]);
 
-    if (exercises.length === 0) return null;
+    if (exercises.length === 0) {
+        return null;
+    }
 
     const displayed = exercises.slice(0, MAX_DISPLAY);
     const overflow = exercises.length - MAX_DISPLAY;
@@ -39,9 +41,7 @@ const SelectedExercisesRow: React.FC<SelectedExercisesRowProps> = ({ exercises }
                     <Icon iconName={name} size={ICON_SIZE} color={ICON_COLOR} />
                 </View>
             ))}
-            {overflow > 0 && (
-                <Text style={styles.overflowText}>+{overflow}</Text>
-            )}
+            {overflow > 0 && <Text style={styles.overflowText}>+{overflow}</Text>}
         </Animated.View>
     );
 };

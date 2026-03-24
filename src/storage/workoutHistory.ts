@@ -44,7 +44,7 @@ export function getStartOfWeek(date: Date): Date {
 
 export async function getSessionsForDate(date: Date): Promise<WorkoutSession[]> {
     const all = await getWorkoutHistory();
-    return all.filter(s => isSameDay(new Date(s.date), date));
+    return all.filter((s) => isSameDay(new Date(s.date), date));
 }
 
 export async function getSessionsForWeek(date: Date): Promise<WorkoutSession[]> {
@@ -53,7 +53,7 @@ export async function getSessionsForWeek(date: Date): Promise<WorkoutSession[]> 
     end.setDate(end.getDate() + 7);
 
     const all = await getWorkoutHistory();
-    return all.filter(s => {
+    return all.filter((s) => {
         const d = new Date(s.date);
         return d >= start && d < end;
     });

@@ -18,16 +18,8 @@ interface FlatDarkCardProps {
     padding?: number;
 }
 
-const FlatDarkCard: React.FC<FlatDarkCardProps> = ({
-    children,
-    style,
-    padding = 20,
-}) => {
-    return (
-        <View style={[styles.card, { padding }, style]}>
-            {children}
-        </View>
-    );
+const FlatDarkCard: React.FC<FlatDarkCardProps> = ({ children, style, padding = 20 }) => {
+    return <View style={[styles.card, { padding }, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({

@@ -17,7 +17,7 @@ export interface ExerciseResult {
 export interface WorkoutSession {
     id: string;
     date: string;
-    duration: number;           // timer countdown seconds (work period)
-    exerciseDuration: number;   // ms to complete exercises (break period)
+    duration: number; // timer countdown seconds (work period)
+    exerciseDuration: number; // ms to complete exercises (break period)
     exercises: ExerciseResult[];
 }

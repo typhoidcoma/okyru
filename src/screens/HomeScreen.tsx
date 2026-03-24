@@ -62,12 +62,14 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
     // Handle action param when returning from ExercisesScreen
     useEffect(() => {
         const action = route.params?.action;
-        if (!action) return;
+        if (!action) {
+            return;
+        }
 
         if (action === 'nextRound') {
             timerRef.current?.handleButtonPress();
         } else if (action === 'endSession') {
-            setTimerKey(prev => prev + 1);
+            setTimerKey((prev) => prev + 1);
         }
 
         navigation.setParams({ action: undefined });
@@ -122,11 +124,7 @@ const HomeScreen: React.FC<Props> = ({ navigation, route }) => {
 
             {/* StartButton — centered between timer and exercises */}
             <View style={styles.startButtonArea}>
-                <StartButton
-                    onPress={handleStartButtonPress}
-                    timerState={timerState}
-                    size={62}
-                />
+                <StartButton onPress={handleStartButtonPress} timerState={timerState} size={62} />
             </View>
 
             {/* Spacer below button */}

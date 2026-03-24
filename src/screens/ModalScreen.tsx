@@ -49,10 +49,10 @@ const ModalScreen: React.FC<ModalScreenProps> = ({
 
     // Initialize all exercises as unchecked — user checks them off as they complete each one
     const [results, setResults] = useState<ExerciseResult[]>(() =>
-        exercises.map(name => ({ name, completed: false }))
+        exercises.map((name) => ({ name, completed: false }))
     );
 
-    const allChecked = results.length > 0 && results.every(r => r.completed);
+    const allChecked = results.length > 0 && results.every((r) => r.completed);
     const hasExercises = exercises.length > 0;
 
     useEffect(() => {
@@ -100,24 +100,28 @@ const ModalScreen: React.FC<ModalScreenProps> = ({
     };
 
     const handleNextRound = () => {
-        if (!allChecked && hasExercises) return;
+        if (!allChecked && hasExercises) {
+            return;
+        }
         saveResults();
         animateOut(() => onNextRound?.(), 200);
     };
 
     const toggleExercise = (index: number) => {
-        setResults(prev =>
-            prev.map((r, i) =>
-                i === index ? { ...r, completed: !r.completed } : r
-            )
+        setResults((prev) =>
+            prev.map((r, i) => (i === index ? { ...r, completed: !r.completed } : r))
         );
     };
 
     const formatDuration = (seconds: number): string => {
         const mins = Math.floor(seconds / 60);
         const secs = seconds % 60;
-        if (mins > 0 && secs > 0) return `${mins}m ${secs}s`;
-        if (mins > 0) return `${mins} min`;
+        if (mins > 0 && secs > 0) {
+            return `${mins}m ${secs}s`;
+        }
+        if (mins > 0) {
+            return `${mins} min`;
+        }
         return `${secs}s`;
     };
 
@@ -140,7 +144,8 @@ const ModalScreen: React.FC<ModalScreenProps> = ({
 
                     {/* Subtitle */}
                     {allChecked || !hasExercises ? (
-                        duration != null && duration > 0 && (
+                        duration != null &&
+                        duration > 0 && (
                             <Text style={styles.subtitle}>
                                 {formatDuration(duration)} completed
                             </Text>
@@ -165,7 +170,11 @@ const ModalScreen: React.FC<ModalScreenProps> = ({
                                     <Icon
                                         iconName={result.name}
                                         size={28}
-                                        color={result.completed ? FlatDark.accentRed : FlatDark.textSubtle}
+                                        color={
+                                            result.completed
+                                                ? FlatDark.accentRed
+                                                : FlatDark.textSubtle
+                                        }
                                     />
                                     <Text
                                         style={[
@@ -192,16 +201,14 @@ const ModalScreen: React.FC<ModalScreenProps> = ({
                             onPress={handleEndSession}
                             activeOpacity={0.7}
                         >
-                            <Text style={[styles.actionText, styles.endText]}>
-                                end session
-                            </Text>
+                            <Text style={[styles.actionText, styles.endText]}>end session</Text>
                         </TouchableOpacity>
                         {onNextRound && (
                             <TouchableOpacity
                                 style={[
                                     styles.actionButton,
                                     styles.nextRoundButton,
-                                    (!allChecked && hasExercises) && styles.nextRoundDisabled,
+                                    !allChecked && hasExercises && styles.nextRoundDisabled,
                                 ]}
                                 onPress={handleNextRound}
                                 activeOpacity={0.7}
@@ -211,7 +218,7 @@ const ModalScreen: React.FC<ModalScreenProps> = ({
                                     style={[
                                         styles.actionText,
                                         styles.nextRoundText,
-                                        (!allChecked && hasExercises) && styles.nextRoundTextDisabled,
+                                        !allChecked && hasExercises && styles.nextRoundTextDisabled,
                                     ]}
                                 >
                                     next round
